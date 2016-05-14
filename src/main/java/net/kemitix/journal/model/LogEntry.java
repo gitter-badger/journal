@@ -1,37 +1,37 @@
 package net.kemitix.journal.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+
 /**
  * Interface for log entry items.
  *
  * @author pcampbell
  */
-public interface LogEntry {
+@Setter
+@Getter
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(discriminatorType = DiscriminatorType.STRING,
+        columnDefinition = "type")
+public abstract class LogEntry {
 
-    /**
-     * Gets the title of the log entry.
-     *
-     * @return the title
-     */
-    String getTitle();
+    @Id
+    @GeneratedValue
+    private Long id;
 
-    /**
-     * Sets the title of the log entry
-     *
-     * @param title the title
-     */
-    void setTitle(String title);
+    private String type;
 
-    /**
-     * Gets the body of the log entry.
-     *
-     * @return the body
-     */
-    String getBody();
+    private String title;
 
-    /**
-     * Sets the body of the log entry.
-     *
-     * @param body the body
-     */
-    void setBody(String body);
+    private String body;
+
 }

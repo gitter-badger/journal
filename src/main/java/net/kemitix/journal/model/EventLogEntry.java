@@ -1,8 +1,6 @@
 package net.kemitix.journal.model;
 
-import lombok.Getter;
-import lombok.Setter;
-
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 /**
@@ -10,13 +8,8 @@ import javax.persistence.Entity;
  *
  * @author pcampbell
  */
-@Setter
-@Getter
 @Entity
-public class EventLogEntry implements LogEntry {
-
-    private String title;
-
-    private String body;
+@DiscriminatorValue(value = "Event")
+public class EventLogEntry extends LogEntry {
 
 }
