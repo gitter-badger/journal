@@ -1,6 +1,7 @@
 package net.kemitix.journal.shell;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -42,9 +43,14 @@ class ListDailyHandler implements CommandHandler {
             return "No Daily Logs found";
         }
         return String.join("\n", all.stream()
+                                    .sorted(sortByDate())
                                     .map(dl -> "- " + dl.getDate() + ": "
                                             + dl.getEntries().size()
                                             + " item(s)")
                                     .collect(Collectors.toList()));
+    }
+
+    private Comparator<DailyLog> sortByDate() {
+        return (o1, o2) -> o2.getDate().compareTo(o1.getDate());
     }
 }
