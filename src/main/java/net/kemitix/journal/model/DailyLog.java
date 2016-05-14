@@ -1,22 +1,27 @@
 package net.kemitix.journal.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 /**
  * DailyLog.
  *
  * @author pcampbell
  */
-@Setter
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class DailyLog {
 
@@ -24,6 +29,7 @@ public class DailyLog {
     private LocalDate date;
 
     @ElementCollection(targetClass = LogEntry.class)
-    private List<LogEntry> entries;
+    @OneToMany(fetch = FetchType.EAGER)
+    private final List<LogEntry> entries = new ArrayList<>();
 
 }
