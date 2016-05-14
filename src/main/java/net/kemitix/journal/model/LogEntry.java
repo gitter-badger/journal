@@ -20,8 +20,8 @@ import javax.persistence.InheritanceType;
 @Getter
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(discriminatorType = DiscriminatorType.STRING,
-        columnDefinition = "type")
+@DiscriminatorColumn(name = "type",
+        discriminatorType = DiscriminatorType.STRING, length = 6)
 public abstract class LogEntry {
 
     @Id
