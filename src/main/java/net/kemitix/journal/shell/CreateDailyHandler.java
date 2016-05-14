@@ -2,6 +2,8 @@ package net.kemitix.journal.shell;
 
 import lombok.val;
 
+import static net.kemitix.journal.shell.CommandPrompt.SELECTED_DATE;
+
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
@@ -42,15 +44,15 @@ public class CreateDailyHandler implements CommandHandler {
 
     @Override
     public String getDescription() {
-        return "Creates a new Daily Log for the date given or today if none is "
-                + "provided";
+        return "Creates a new Daily Log for the date given or for default\n"
+                + "date if none is provided";
     }
 
     @Override
     public String handle(
             final Map<String, String> context, final String command,
             final Queue<String> args) {
-        LocalDate date = LocalDate.now();
+        LocalDate date = LocalDate.parse(context.get(SELECTED_DATE));
         if (args.size() > 0) {
             final String suppliedDate = args.remove();
             date = LocalDate.parse(suppliedDate);

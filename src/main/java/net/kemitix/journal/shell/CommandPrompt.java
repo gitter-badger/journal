@@ -5,6 +5,7 @@ import lombok.val;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.LocalDate;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -27,6 +28,8 @@ import org.springframework.stereotype.Component;
 class CommandPrompt {
 
     private final List<CommandHandler> handlerList;
+
+    static final String SELECTED_DATE = "selected-date";
 
     private Map<String, CommandHandler> handlers;
 
@@ -57,6 +60,7 @@ class CommandPrompt {
             System.out.println("Ctrl-D to quit");
             val context = new HashMap<String, String>();
             context.put(STATE, STATE_RUNNING);
+            context.put(SELECTED_DATE, LocalDate.now().toString());
             while (STATE_RUNNING.equals(context.get(STATE))) {
                 System.out.print("> ");
                 val input = br.readLine();
