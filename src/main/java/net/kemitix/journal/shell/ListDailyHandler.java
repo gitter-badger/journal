@@ -35,6 +35,17 @@ class ListDailyHandler implements CommandHandler {
     }
 
     @Override
+    public String getSyntax() {
+        return "list-daily";
+    }
+
+    @Override
+    public String getDescription() {
+        return "lists all the Daily Logs together with a count of the items "
+                + "each has";
+    }
+
+    @Override
     public String handle(
             final Map<String, String> context, final String command,
             final Queue<String> args) {

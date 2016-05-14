@@ -36,6 +36,17 @@ public class CreateDailyHandler implements CommandHandler {
     }
 
     @Override
+    public String getSyntax() {
+        return "create-daily [yyyy-mm-dd]";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Creates a new Daily Log for the date given or today if none is "
+                + "provided";
+    }
+
+    @Override
     public String handle(
             final Map<String, String> context, final String command,
             final Queue<String> args) {

@@ -17,6 +17,16 @@ interface CommandHandler {
     List<String> getCommands();
 
     /**
+     * Returns the syntax of the command.
+     */
+    String getSyntax();
+
+    /**
+     * Returns the description of the command.
+     */
+    String getDescription();
+
+    /**
      * Handle the command.
      *
      * @param context the application context

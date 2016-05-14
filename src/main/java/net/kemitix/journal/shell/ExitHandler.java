@@ -26,6 +26,16 @@ class ExitHandler implements CommandHandler {
     }
 
     @Override
+    public String getSyntax() {
+        return COMMAND;
+    }
+
+    @Override
+    public String getDescription() {
+        return "Exits the application";
+    }
+
+    @Override
     public String handle(
             final Map<String, String> context, final String command,
             final Queue<String> args) {

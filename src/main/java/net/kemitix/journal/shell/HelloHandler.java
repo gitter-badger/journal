@@ -27,6 +27,16 @@ class HelloHandler implements CommandHandler {
     }
 
     @Override
+    public String getSyntax() {
+        return "{hello,hi,hiya} [name]";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Hello World example command";
+    }
+
+    @Override
     public String handle(
             final Map<String, String> context, final String command,
             final Queue<String> args) {
