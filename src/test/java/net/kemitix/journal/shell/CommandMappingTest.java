@@ -37,4 +37,11 @@ public class CommandMappingTest {
                                  .build()).hasFieldOrProperty("handler");
     }
 
+    @Test
+    public void shouldBuildToString() {
+        assertThat(
+                CommandMapping.builder().handler(handler).toString()).contains(
+                "(handler=handler, args=null)");
+    }
+
 }
