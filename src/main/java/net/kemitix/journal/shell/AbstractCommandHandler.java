@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
  *
  * @author pcampbell
  */
-abstract class AbstractCommandHandler implements CommandHandler {
+public abstract class AbstractCommandHandler implements CommandHandler {
 
     @Override
     public String getSyntax() {

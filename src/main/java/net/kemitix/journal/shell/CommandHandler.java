@@ -9,7 +9,7 @@ import java.util.Optional;
  *
  * @author pcampbell
  */
-interface CommandHandler {
+public interface CommandHandler {
 
     /**
      * Returns a list of aliases for the command. May be multiple words.

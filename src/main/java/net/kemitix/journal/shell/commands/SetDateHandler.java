@@ -1,4 +1,4 @@
-package net.kemitix.journal.shell;
+package net.kemitix.journal.shell.commands;
 
 import static net.kemitix.journal.shell.CommandPrompt.SELECTED_DATE;
 
@@ -12,6 +12,9 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
+
+import net.kemitix.journal.shell.AbstractCommandHandler;
+import net.kemitix.journal.shell.TypeSafeMap;
 
 /**
  * Sets the application's current date to that provided. This date will be the

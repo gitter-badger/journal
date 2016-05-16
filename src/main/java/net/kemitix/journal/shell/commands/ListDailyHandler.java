@@ -1,4 +1,4 @@
-package net.kemitix.journal.shell;
+package net.kemitix.journal.shell.commands;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import net.kemitix.journal.dao.DailyLogDAO;
 import net.kemitix.journal.model.DailyLog;
+import net.kemitix.journal.shell.AbstractCommandHandler;
 
 /**
  * Lists the DailyLogs available.

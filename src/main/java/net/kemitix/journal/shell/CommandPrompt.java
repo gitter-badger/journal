@@ -18,9 +18,9 @@ import org.springframework.stereotype.Component;
  * @author pcampbell
  */
 @Component
-class CommandPrompt {
+public class CommandPrompt {
 
-    static final String SELECTED_DATE = "selected-date";
+    public static final String SELECTED_DATE = "selected-date";
 
     private final CommandRouter commandRouter;
 
@@ -34,8 +34,11 @@ class CommandPrompt {
         this.applicationState = applicationState;
     }
 
+    /**
+     * Runs the command line interface.
+     */
     @PostConstruct
-    public void run() throws Exception {
+    public void run() {
         try (val br = new BufferedReader(new InputStreamReader(System.in))) {
             System.out.println("Ctrl-D to quit");
             applicationState.put("running", true, Boolean.class);

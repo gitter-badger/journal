@@ -1,4 +1,4 @@
-package net.kemitix.journal.shell;
+package net.kemitix.journal.shell.commands;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -8,6 +8,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+
+import net.kemitix.journal.shell.AbstractCommandHandler;
 
 /**
  * Hello World handler.

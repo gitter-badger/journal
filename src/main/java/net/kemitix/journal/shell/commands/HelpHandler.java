@@ -1,4 +1,4 @@
-package net.kemitix.journal.shell;
+package net.kemitix.journal.shell.commands;
 
 import java.util.Collections;
 import java.util.List;
@@ -8,6 +8,9 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
+
+import net.kemitix.journal.shell.AbstractCommandHandler;
+import net.kemitix.journal.shell.CommandHandler;
 
 /**
  * Help handler.

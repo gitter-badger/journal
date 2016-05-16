@@ -1,4 +1,4 @@
-package net.kemitix.journal.shell;
+package net.kemitix.journal.shell.commands;
 
 import lombok.val;
 
@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 
 import net.kemitix.journal.dao.DailyLogDAO;
 import net.kemitix.journal.model.DailyLog;
+import net.kemitix.journal.shell.AbstractCommandHandler;
+import net.kemitix.journal.shell.TypeSafeMap;
 
 /**
  * Create a Daily Log for the supplied date, or today if none given.
