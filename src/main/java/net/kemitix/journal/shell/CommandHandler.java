@@ -2,7 +2,7 @@ package net.kemitix.journal.shell;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
+import java.util.Optional;
 
 /**
  * Interface for handling a command.
@@ -12,12 +12,27 @@ import java.util.Queue;
 interface CommandHandler {
 
     /**
-     * Returns the list of commands that can be handled.
+     * Returns a list of aliases for the command. May be multiple words.
      */
-    List<String> getCommands();
+    List<String> getAliases();
 
     /**
-     * Returns the syntax of the command.
+     * Returns an Optional containing a regex Pattern to match against
+     * parameters that follow the matched alias. If the command does not take
+     * any parameters then the Optional will be empty.
+     */
+    Optional<String> getParameterRegex();
+
+    /**
+     * Returns the list of the named parameters captured by {@link
+     * #getParameterRegex()}.
+     *
+     * @return the list of parameter names
+     */
+    List<String> getParameterNames();
+
+    /**
+     * Returns the syntax of the command for display in help messages.
      */
     String getSyntax();
 
@@ -27,15 +42,20 @@ interface CommandHandler {
     String getDescription();
 
     /**
+     * Returns a summary of the command and how to use it.
+     *
+     * @return description of how to use the command
+     */
+    String getUsage();
+
+    /**
      * Handle the command.
      *
      * @param context the application context
-     * @param command the command alias used to invoke the command
-     * @param args    the remaining arguments to the command
+     * @param args    the matched arguments
      *
      * @return the command output
      */
-    String handle(
-            Map<String, String> context, String command, Queue<String> args);
+    String handle(Map<String, String> context, Map<String, String> args);
 
 }

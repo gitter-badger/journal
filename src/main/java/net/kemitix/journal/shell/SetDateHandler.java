@@ -6,7 +6,8 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -17,34 +18,52 @@ import org.springframework.stereotype.Service;
  * @author pcampbell
  */
 @Service
-class SetDateHandler implements CommandHandler {
+class SetDateHandler extends AbstractCommandHandler {
 
-    private static final String COMMAND = "set-date";
+    private static final List<String> ALIASES = Collections.singletonList(
+            "set date");
+
+    private static final String PARAMETER_REGEX
+            = "(?<date>\\d\\d\\d\\d-\\d\\d-\\d\\d)?";
+
+    private static final List<String> PARAMETER_NAMES
+            = Collections.singletonList("date");
 
     @Override
-    public List<String> getCommands() {
-        return Collections.singletonList(COMMAND);
+    public List<String> getAliases() {
+        return ALIASES;
+    }
+
+    @Override
+    public Optional<String> getParameterRegex() {
+        return Optional.of(PARAMETER_REGEX);
+    }
+
+    @Override
+    public List<String> getParameterNames() {
+        return PARAMETER_NAMES;
     }
 
     @Override
     public String getSyntax() {
-        return COMMAND + " [yyyy-mm-dd]";
+        return ALIASES.stream()
+                      .map(a -> a + " [yyyy-mm-dd]")
+                      .collect(Collectors.joining("\n"));
     }
 
     @Override
     public String getDescription() {
         return "Sets the application's date. This will be the default date\n"
-                + "for other commands.\n"
-                + "If no date is given then the date will be set to today.";
+                + "for other commands. If no date is given then the date will\n"
+                + " be set to today.";
     }
 
     @Override
     public String handle(
-            final Map<String, String> context, final String command,
-            final Queue<String> args) {
+            final Map<String, String> context, final Map<String, String> args) {
         LocalDate selectedDate = LocalDate.now();
-        if (!args.isEmpty()) {
-            selectedDate = LocalDate.parse(args.remove());
+        if (args.containsKey("date")) {
+            selectedDate = LocalDate.parse(args.get("date"));
         }
         context.put(SELECTED_DATE, selectedDate.toString());
         return "Date set to " + context.get(SELECTED_DATE);

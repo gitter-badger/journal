@@ -3,10 +3,9 @@ package net.kemitix.journal.shell;
 import static net.kemitix.journal.shell.CommandPrompt.STATE;
 import static net.kemitix.journal.shell.CommandPrompt.STATE_EXITING;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 
 import org.springframework.stereotype.Service;
 
@@ -16,18 +15,14 @@ import org.springframework.stereotype.Service;
  * @author pcampbell
  */
 @Service
-class ExitHandler implements CommandHandler {
+class ExitHandler extends AbstractCommandHandler {
 
-    private static final String COMMAND = "exit";
-
-    @Override
-    public List<String> getCommands() {
-        return Collections.singletonList(COMMAND);
-    }
+    private static final List<String> ALIASES = Arrays.asList("exit", "quit",
+            "bye");
 
     @Override
-    public String getSyntax() {
-        return COMMAND;
+    public List<String> getAliases() {
+        return ALIASES;
     }
 
     @Override
@@ -37,8 +32,7 @@ class ExitHandler implements CommandHandler {
 
     @Override
     public String handle(
-            final Map<String, String> context, final String command,
-            final Queue<String> args) {
+            final Map<String, String> context, final Map<String, String> args) {
         context.put(STATE, STATE_EXITING);
         return "Exiting...";
     }

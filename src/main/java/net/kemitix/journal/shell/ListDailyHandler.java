@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -20,7 +20,10 @@ import net.kemitix.journal.model.DailyLog;
  * @author pcampbell
  */
 @Service
-class ListDailyHandler implements CommandHandler {
+class ListDailyHandler extends AbstractCommandHandler {
+
+    private static final List<String> ALIASES = Collections.singletonList(
+            "list daily");
 
     private final DailyLogDAO dailyLogDAO;
 
@@ -30,35 +33,31 @@ class ListDailyHandler implements CommandHandler {
     }
 
     @Override
-    public List<String> getCommands() {
-        return Collections.singletonList("list-daily");
-    }
-
-    @Override
-    public String getSyntax() {
-        return "list-daily";
+    public List<String> getAliases() {
+        return ALIASES;
     }
 
     @Override
     public String getDescription() {
-        return "lists all the Daily Logs together with a count of the items "
-                + "each has";
+        return "Lists all the Daily Logs with a count of the items each has";
     }
 
     @Override
     public String handle(
-            final Map<String, String> context, final String command,
-            final Queue<String> args) {
+            final Map<String, String> context, final Map<String, String> args) {
         final List<DailyLog> all = dailyLogDAO.findAll();
         if (all.size() == 0) {
             return "No Daily Logs found";
         }
-        return String.join("\n", all.stream()
-                                    .sorted(sortByDate())
-                                    .map(dl -> "- " + dl.getDate() + ": "
-                                            + dl.getEntries().size()
-                                            + " item(s)")
-                                    .collect(Collectors.toList()));
+        return all.stream()
+                  .sorted(sortByDate())
+                  .map(dailyLogSummary())
+                  .collect(Collectors.joining("\n"));
+    }
+
+    private Function<DailyLog, String> dailyLogSummary() {
+        return dl -> "- " + dl.getDate() + ": " + dl.getEntries().size()
+                + " item(s)";
     }
 
     private Comparator<DailyLog> sortByDate() {

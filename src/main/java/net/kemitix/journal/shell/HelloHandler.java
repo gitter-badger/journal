@@ -1,9 +1,11 @@
 package net.kemitix.journal.shell;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -13,22 +15,36 @@ import org.springframework.stereotype.Service;
  * @author pcampbell
  */
 @Service
-class HelloHandler implements CommandHandler {
+class HelloHandler extends AbstractCommandHandler {
 
-    private static final String COMMAND_HELLO = "hello";
+    private static final List<String> ALIASES = Arrays.asList("hello", "hi",
+            "hiya");
 
-    private static final String COMMAND_HI = "hi";
+    private static final String PARAMETER_REGEX = "(?<name>.+)?";
 
-    private static final String COMMAND_HIYA = "hiya";
+    private static final List<String> PARAMETERS = Collections.singletonList(
+            "name");
 
     @Override
-    public List<String> getCommands() {
-        return Arrays.asList(COMMAND_HELLO, COMMAND_HI, COMMAND_HIYA);
+    public List<String> getAliases() {
+        return ALIASES;
+    }
+
+    @Override
+    public Optional<String> getParameterRegex() {
+        return Optional.of(PARAMETER_REGEX);
+    }
+
+    @Override
+    public List<String> getParameterNames() {
+        return PARAMETERS;
     }
 
     @Override
     public String getSyntax() {
-        return "{hello,hi,hiya} [name]";
+        return ALIASES.stream()
+                      .map(a -> a + " [name]")
+                      .collect(Collectors.joining("\n"));
     }
 
     @Override
@@ -38,11 +54,10 @@ class HelloHandler implements CommandHandler {
 
     @Override
     public String handle(
-            final Map<String, String> context, final String command,
-            final Queue<String> args) {
+            final Map<String, String> context, final Map<String, String> args) {
         String name = "World";
-        if (args.size() > 0) {
-            name = args.remove();
+        if (args.containsKey("name")) {
+            name = args.get("name");
         }
         return "Hello, " + name + "!";
     }

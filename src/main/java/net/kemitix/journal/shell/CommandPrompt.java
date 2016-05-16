@@ -6,12 +6,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.LocalDate;
-import java.util.ArrayDeque;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -27,11 +22,7 @@ import org.springframework.stereotype.Component;
 @Component
 class CommandPrompt {
 
-    private final List<CommandHandler> handlerList;
-
     static final String SELECTED_DATE = "selected-date";
-
-    private Map<String, CommandHandler> handlers;
 
     static final String STATE = "state";
 
@@ -39,23 +30,15 @@ class CommandPrompt {
 
     static final String STATE_EXITING = "exiting";
 
+    private final CommandRouter commandRouter;
+
     @Inject
-    CommandPrompt(final List<CommandHandler> handlerList) {
-        this.handlerList = handlerList;
+    CommandPrompt(final CommandRouter commandRouter) {
+        this.commandRouter = commandRouter;
     }
 
     @PostConstruct
     public void run() throws Exception {
-        handlers = new HashMap<>();
-        handlerList.stream()
-                   .forEach(h -> h.getCommands().stream().forEach(command -> {
-                       if (handlers.containsKey(command)) {
-                           throw new RuntimeException(
-                                   "Duplicate command implementations found: '"
-                                           + command + "'");
-                       }
-                       handlers.put(command, h);
-                   }));
         try (val br = new BufferedReader(new InputStreamReader(System.in))) {
             System.out.println("Ctrl-D to quit");
             val context = new HashMap<String, String>();
@@ -70,17 +53,15 @@ class CommandPrompt {
                     System.out.println("Exiting...");
                 } else if (input.length() > 0) {
                     // look up command
-                    Queue<String> args = new ArrayDeque<>(
-                            Arrays.asList(input.split(" ")));
-                    val command = args.remove();
+                    val commandMapping = commandRouter.selectCommand(input);
                     // dispatch command
-                    if (handlers.containsKey(command)) {
-                        System.out.println(handlers.get(command)
-                                                   .handle(context, command,
-                                                           args));
+                    if (commandMapping.isPresent()) {
+                        val mapping = commandMapping.get();
+                        System.out.println(mapping.getHandler()
+                                                  .handle(context,
+                                                          mapping.getArgs()));
                     } else {
-                        System.out.println(
-                                "Command '" + command + "' is not recognised!");
+                        System.out.println("Not a recognised command!");
                     }
                 }
             }
@@ -88,4 +69,5 @@ class CommandPrompt {
             System.out.println("Aborting: " + e.getMessage());
         }
     }
+
 }
