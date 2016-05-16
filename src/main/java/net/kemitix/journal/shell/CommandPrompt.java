@@ -5,6 +5,7 @@ import lombok.val;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.LocalDate;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -44,6 +45,8 @@ public class CommandPrompt {
         try (val br = new BufferedReader(new InputStreamReader(System.in))) {
             System.out.println("Ctrl-D to quit");
             applicationState.put("running", true, Boolean.class);
+            applicationState.put("selected date", LocalDate.now(),
+                    LocalDate.class);
             while (applicationState.get("running", Boolean.class).isPresent()) {
                 System.out.print("> ");
                 val input = br.readLine();
