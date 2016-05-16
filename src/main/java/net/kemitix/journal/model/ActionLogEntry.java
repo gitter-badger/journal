@@ -17,6 +17,6 @@ import javax.persistence.Entity;
 @DiscriminatorValue(value = "Action")
 public class ActionLogEntry extends LogEntry {
 
-    private ActionState state;
+    private ActionState state = ActionState.TODO;
 
 }
