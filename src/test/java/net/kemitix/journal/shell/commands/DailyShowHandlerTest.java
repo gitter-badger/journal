@@ -1,5 +1,6 @@
 package net.kemitix.journal.shell.commands;
 
+import lombok.val;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,7 +14,6 @@ import static org.mockito.BDDMockito.given;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Optional;
 
 import net.kemitix.journal.LogEntryGlyphs;
@@ -64,10 +64,10 @@ public class DailyShowHandlerTest {
     @Test
     public void shouldHandle() throws Exception {
         //given
-        final LocalDate now = LocalDate.now();
+        val now = LocalDate.now();
         given(applicationState.get("selected date",
                 LocalDate.class)).willReturn(Optional.of(now));
-        final List<LogEntry> logEntries = new ArrayList<>();
+        val logEntries = new ArrayList<LogEntry>();
         logEntries.add(logEntry1);
         logEntries.add(logEntry2);
         given(journalService.getLogs(now)).willReturn(logEntries);
@@ -76,13 +76,11 @@ public class DailyShowHandlerTest {
         given(logEntry1.getTitle()).willReturn("entry 1");
         given(logEntry2.getTitle()).willReturn("entry 2");
         //when
-        final String result = handler.handle(new HashMap<>());
+        val result = handler.handle(new HashMap<>());
         //then
-        SoftAssertions softly = new SoftAssertions();
-
+        val softly = new SoftAssertions();
         softly.assertThat(result).contains("1: a entry 1");
         softly.assertThat(result).contains("2: b entry 2");
-
         softly.assertAll();
     }
 
