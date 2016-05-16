@@ -27,7 +27,7 @@ import net.kemitix.journal.TypeSafeMap;
  * @author pcampbell
  */
 @Service
-public class CreateDailyHandler extends AbstractCommandHandler {
+public class DailyCreateHandler extends AbstractCommandHandler {
 
     private static final List<String> ALIASES = Collections.singletonList(
             "create daily");
@@ -40,16 +40,16 @@ public class CreateDailyHandler extends AbstractCommandHandler {
 
     private final DailyLogDAO dailyLogDAO;
 
-    private final SetDateHandler setDateHandler;
+    private final DateSetHandler dateSetHandler;
 
     private final TypeSafeMap applicationState;
 
     @Inject
-    CreateDailyHandler(
-            final DailyLogDAO dailyLogDAO, final SetDateHandler setDateHandler,
+    DailyCreateHandler(
+            final DailyLogDAO dailyLogDAO, final DateSetHandler dateSetHandler,
             final TypeSafeMap applicationState) {
         this.dailyLogDAO = dailyLogDAO;
-        this.setDateHandler = setDateHandler;
+        this.dateSetHandler = dateSetHandler;
         this.applicationState = applicationState;
     }
 
@@ -89,7 +89,7 @@ public class CreateDailyHandler extends AbstractCommandHandler {
         List<String> output = new ArrayList<>();
         if (args.containsKey("date")) {
             date = LocalDate.parse(args.get("date"));
-            output.add(setDateHandler.handle(args));
+            output.add(dateSetHandler.handle(args));
         } else {
             val dateOptional = applicationState.get(SELECTED_DATE,
                     LocalDate.class);

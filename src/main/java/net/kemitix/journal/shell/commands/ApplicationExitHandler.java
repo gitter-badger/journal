@@ -17,7 +17,7 @@ import net.kemitix.journal.TypeSafeMap;
  * @author pcampbell
  */
 @Service
-class ExitHandler extends AbstractCommandHandler {
+class ApplicationExitHandler extends AbstractCommandHandler {
 
     private static final List<String> ALIASES = Arrays.asList("exit", "quit",
             "bye");
@@ -25,7 +25,7 @@ class ExitHandler extends AbstractCommandHandler {
     private final TypeSafeMap applicationState;
 
     @Inject
-    ExitHandler(final TypeSafeMap applicationState) {
+    ApplicationExitHandler(final TypeSafeMap applicationState) {
         this.applicationState = applicationState;
     }
 

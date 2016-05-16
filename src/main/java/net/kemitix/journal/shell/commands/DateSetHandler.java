@@ -23,7 +23,7 @@ import net.kemitix.journal.TypeSafeMap;
  * @author pcampbell
  */
 @Service
-class SetDateHandler extends AbstractCommandHandler {
+class DateSetHandler extends AbstractCommandHandler {
 
     private static final List<String> ALIASES = Collections.singletonList(
             "set date");
@@ -37,7 +37,7 @@ class SetDateHandler extends AbstractCommandHandler {
     private final TypeSafeMap applicationState;
 
     @Inject
-    SetDateHandler(final TypeSafeMap applicationState) {
+    DateSetHandler(final TypeSafeMap applicationState) {
         this.applicationState = applicationState;
     }
 

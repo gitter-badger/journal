@@ -17,7 +17,7 @@ import net.kemitix.journal.shell.AbstractCommandHandler;
  * @author pcampbell
  */
 @Service
-class HelloHandler extends AbstractCommandHandler {
+class HelloSayHandler extends AbstractCommandHandler {
 
     private static final List<String> ALIASES = Arrays.asList("hello", "hi",
             "hiya");

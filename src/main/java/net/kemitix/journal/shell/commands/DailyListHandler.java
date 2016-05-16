@@ -21,7 +21,7 @@ import net.kemitix.journal.shell.AbstractCommandHandler;
  * @author pcampbell
  */
 @Service
-class ListDailyHandler extends AbstractCommandHandler {
+class DailyListHandler extends AbstractCommandHandler {
 
     private static final List<String> ALIASES = Collections.singletonList(
             "list daily");
@@ -29,7 +29,7 @@ class ListDailyHandler extends AbstractCommandHandler {
     private final DailyLogDAO dailyLogDAO;
 
     @Inject
-    ListDailyHandler(final DailyLogDAO dailyLogDAO) {
+    DailyListHandler(final DailyLogDAO dailyLogDAO) {
         this.dailyLogDAO = dailyLogDAO;
     }
 

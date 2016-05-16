@@ -18,7 +18,7 @@ import net.kemitix.journal.shell.CommandHandler;
  * @author pcampbell
  */
 @Service
-class HelpHandler extends AbstractCommandHandler {
+class HelpDisplayHandler extends AbstractCommandHandler {
 
     private static final List<String> ALIASES = Collections.singletonList(
             "help");
@@ -26,7 +26,7 @@ class HelpHandler extends AbstractCommandHandler {
     private final List<CommandHandler> handlerList;
 
     @Inject
-    HelpHandler(final List<CommandHandler> handlerList) {
+    HelpDisplayHandler(final List<CommandHandler> handlerList) {
         this.handlerList = handlerList;
     }
 
