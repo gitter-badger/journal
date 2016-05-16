@@ -3,6 +3,7 @@ package net.kemitix.journal.model;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
@@ -29,6 +30,7 @@ public abstract class LogEntry {
     @GeneratedValue
     private Long id;
 
+    @Column(insertable = false, updatable = false)
     private String type;
 
     private String title;
