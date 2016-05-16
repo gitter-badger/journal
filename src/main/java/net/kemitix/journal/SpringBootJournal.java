@@ -2,6 +2,10 @@ package net.kemitix.journal;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+
+import net.kemitix.journal.shell.TypeSafeHashMap;
+import net.kemitix.journal.shell.TypeSafeMap;
 
 /**
  * Application Main Class.
@@ -19,5 +23,10 @@ public class SpringBootJournal {
      */
     public static void main(final String[] args) {
         SpringApplication.run(SpringBootJournal.class, args);
+    }
+
+    @Bean
+    TypeSafeMap applicationState() {
+        return new TypeSafeHashMap();
     }
 }

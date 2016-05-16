@@ -1,11 +1,10 @@
 package net.kemitix.journal.shell;
 
-import static net.kemitix.journal.shell.CommandPrompt.STATE;
-import static net.kemitix.journal.shell.CommandPrompt.STATE_EXITING;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
 
@@ -20,6 +19,13 @@ class ExitHandler extends AbstractCommandHandler {
     private static final List<String> ALIASES = Arrays.asList("exit", "quit",
             "bye");
 
+    private final TypeSafeMap applicationState;
+
+    @Inject
+    ExitHandler(final TypeSafeMap applicationState) {
+        this.applicationState = applicationState;
+    }
+
     @Override
     public List<String> getAliases() {
         return ALIASES;
@@ -31,9 +37,8 @@ class ExitHandler extends AbstractCommandHandler {
     }
 
     @Override
-    public String handle(
-            final Map<String, String> context, final Map<String, String> args) {
-        context.put(STATE, STATE_EXITING);
+    public String handle(final Map<String, String> args) {
+        applicationState.remove("running");
         return "Exiting...";
     }
 }

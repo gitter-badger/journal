@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.inject.Inject;
+
 import org.springframework.stereotype.Service;
 
 /**
@@ -28,6 +30,13 @@ class SetDateHandler extends AbstractCommandHandler {
 
     private static final List<String> PARAMETER_NAMES
             = Collections.singletonList("date");
+
+    private final TypeSafeMap applicationState;
+
+    @Inject
+    SetDateHandler(final TypeSafeMap applicationState) {
+        this.applicationState = applicationState;
+    }
 
     @Override
     public List<String> getAliases() {
@@ -59,13 +68,12 @@ class SetDateHandler extends AbstractCommandHandler {
     }
 
     @Override
-    public String handle(
-            final Map<String, String> context, final Map<String, String> args) {
+    public String handle(final Map<String, String> args) {
         LocalDate selectedDate = LocalDate.now();
         if (args.containsKey("date")) {
             selectedDate = LocalDate.parse(args.get("date"));
         }
-        context.put(SELECTED_DATE, selectedDate.toString());
-        return "Date set to " + context.get(SELECTED_DATE);
+        applicationState.put(SELECTED_DATE, selectedDate, LocalDate.class);
+        return "Date set to " + selectedDate;
     }
 }

@@ -59,11 +59,10 @@ interface CommandHandler {
     /**
      * Handle the command.
      *
-     * @param context the application context
-     * @param args    the matched arguments
+     * @param args the matched arguments
      *
      * @return the command output
      */
-    String handle(Map<String, String> context, Map<String, String> args);
+    String handle(Map<String, String> args);
 
 }

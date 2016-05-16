@@ -40,12 +40,15 @@ public class CreateDailyHandler extends AbstractCommandHandler {
 
     private final SetDateHandler setDateHandler;
 
+    private final TypeSafeMap applicationState;
+
     @Inject
     CreateDailyHandler(
-            final DailyLogDAO dailyLogDAO,
-            final SetDateHandler setDateHandler) {
+            final DailyLogDAO dailyLogDAO, final SetDateHandler setDateHandler,
+            final TypeSafeMap applicationState) {
         this.dailyLogDAO = dailyLogDAO;
         this.setDateHandler = setDateHandler;
+        this.applicationState = applicationState;
     }
 
     @Override
@@ -79,12 +82,20 @@ public class CreateDailyHandler extends AbstractCommandHandler {
 
     @Override
     public String handle(
-            final Map<String, String> context, final Map<String, String> args) {
-        LocalDate date = LocalDate.parse(context.get(SELECTED_DATE));
+            final Map<String, String> args) {
+        LocalDate date;
         List<String> output = new ArrayList<>();
         if (args.containsKey("date")) {
             date = LocalDate.parse(args.get("date"));
-            output.add(setDateHandler.handle(context, args));
+            output.add(setDateHandler.handle(args));
+        } else {
+            val dateOptional = applicationState.get(SELECTED_DATE,
+                    LocalDate.class);
+            if (dateOptional.isPresent()) {
+                date = dateOptional.get();
+            } else {
+                date = LocalDate.now();
+            }
         }
         val dailyLog = new DailyLog(date);
         dailyLogDAO.save(dailyLog);

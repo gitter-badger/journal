@@ -5,8 +5,6 @@ import lombok.val;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.time.LocalDate;
-import java.util.HashMap;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -24,31 +22,28 @@ class CommandPrompt {
 
     static final String SELECTED_DATE = "selected-date";
 
-    static final String STATE = "state";
-
-    static final String STATE_RUNNING = "running";
-
-    static final String STATE_EXITING = "exiting";
-
     private final CommandRouter commandRouter;
 
+    private final TypeSafeMap applicationState;
+
     @Inject
-    CommandPrompt(final CommandRouter commandRouter) {
+    CommandPrompt(
+            final CommandRouter commandRouter,
+            final TypeSafeMap applicationState) {
         this.commandRouter = commandRouter;
+        this.applicationState = applicationState;
     }
 
     @PostConstruct
     public void run() throws Exception {
         try (val br = new BufferedReader(new InputStreamReader(System.in))) {
             System.out.println("Ctrl-D to quit");
-            val context = new HashMap<String, String>();
-            context.put(STATE, STATE_RUNNING);
-            context.put(SELECTED_DATE, LocalDate.now().toString());
-            while (STATE_RUNNING.equals(context.get(STATE))) {
+            applicationState.put("running", true, Boolean.class);
+            while (applicationState.get("running", Boolean.class).isPresent()) {
                 System.out.print("> ");
                 val input = br.readLine();
                 if (input == null) {
-                    context.put(STATE, STATE_EXITING);
+                    applicationState.remove("running");
                     System.out.println();
                     System.out.println("Exiting...");
                 } else if (input.length() > 0) {
@@ -57,9 +52,8 @@ class CommandPrompt {
                     // dispatch command
                     if (commandMapping.isPresent()) {
                         val mapping = commandMapping.get();
-                        System.out.println(mapping.getHandler()
-                                                  .handle(context,
-                                                          mapping.getArgs()));
+                        System.out.println(
+                                mapping.getHandler().handle(mapping.getArgs()));
                     } else {
                         System.out.println("Not a recognised command!");
                     }

@@ -38,8 +38,7 @@ class HelpHandler extends AbstractCommandHandler {
     }
 
     @Override
-    public String handle(
-            final Map<String, String> context, final Map<String, String> args) {
+    public String handle(final Map<String, String> args) {
         return "The following commands are available:\n" + String.join("\n",
                 handlerList.stream()
                            .map(CommandHandler::getUsage)

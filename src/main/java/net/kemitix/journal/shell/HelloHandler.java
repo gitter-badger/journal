@@ -53,8 +53,7 @@ class HelloHandler extends AbstractCommandHandler {
     }
 
     @Override
-    public String handle(
-            final Map<String, String> context, final Map<String, String> args) {
+    public String handle(final Map<String, String> args) {
         String name = "World";
         if (args.containsKey("name")) {
             name = args.get("name");

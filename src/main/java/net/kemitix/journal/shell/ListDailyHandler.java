@@ -43,8 +43,7 @@ class ListDailyHandler extends AbstractCommandHandler {
     }
 
     @Override
-    public String handle(
-            final Map<String, String> context, final Map<String, String> args) {
+    public String handle(final Map<String, String> args) {
         final List<DailyLog> all = dailyLogDAO.findAll();
         if (all.size() == 0) {
             return "No Daily Logs found";
