@@ -4,6 +4,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
 import org.springframework.boot.SpringApplication;
@@ -38,7 +39,7 @@ public class SpringBootJournal {
 
     @Bean
     PrintWriter writer() {
-        return new PrintWriter(System.out);
+        return new PrintWriter(new OutputStreamWriter(System.out, UTF_8), true);
     }
 
     @Bean
