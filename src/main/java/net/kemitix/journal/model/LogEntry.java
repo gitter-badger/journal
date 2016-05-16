@@ -22,6 +22,7 @@ import javax.persistence.InheritanceType;
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "type",
         discriminatorType = DiscriminatorType.STRING, length = 6)
+@SuppressWarnings("magicnumber")
 public abstract class LogEntry {
 
     @Id
