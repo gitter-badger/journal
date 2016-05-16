@@ -49,16 +49,15 @@ public class LogEntryGlyphs {
         if (logEntry instanceof ActionLogEntry) {
             ActionLogEntry ale = (ActionLogEntry) logEntry;
             switch (ale.getState()) {
-            case TODO:
-                return actionTodo;
             case DONE:
                 return actionDone;
             case DEFERRED:
                 return actionDeferred;
             case SCHEDULED:
                 return actionScheduled;
+            case TODO:
             default:
-                return " ";
+                return actionTodo;
             }
         }
         return " ";
