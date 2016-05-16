@@ -11,6 +11,8 @@ import javax.inject.Inject;
 
 import org.springframework.stereotype.Component;
 
+import net.kemitix.journal.TypeSafeMap;
+
 /**
  * The Command Prompt. Reads input and looks up and dispatches to commands to
  * implement the command.

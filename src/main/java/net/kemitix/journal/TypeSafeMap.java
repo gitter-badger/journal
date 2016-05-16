@@ -1,4 +1,4 @@
-package net.kemitix.journal.shell;
+package net.kemitix.journal;
 
 import java.util.Optional;
 

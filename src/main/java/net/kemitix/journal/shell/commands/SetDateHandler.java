@@ -14,7 +14,7 @@ import javax.inject.Inject;
 import org.springframework.stereotype.Service;
 
 import net.kemitix.journal.shell.AbstractCommandHandler;
-import net.kemitix.journal.shell.TypeSafeMap;
+import net.kemitix.journal.TypeSafeMap;
 
 /**
  * Sets the application's current date to that provided. This date will be the

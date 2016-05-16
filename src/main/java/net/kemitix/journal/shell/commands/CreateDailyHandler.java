@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 import net.kemitix.journal.dao.DailyLogDAO;
 import net.kemitix.journal.model.DailyLog;
 import net.kemitix.journal.shell.AbstractCommandHandler;
-import net.kemitix.journal.shell.TypeSafeMap;
+import net.kemitix.journal.TypeSafeMap;
 
 /**
  * Create a Daily Log for the supplied date, or today if none given.

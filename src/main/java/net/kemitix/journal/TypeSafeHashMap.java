@@ -1,4 +1,4 @@
-package net.kemitix.journal.shell;
+package net.kemitix.journal;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,7 +9,7 @@ import java.util.Optional;
  *
  * @author pcampbell
  */
-public class TypeSafeHashMap implements TypeSafeMap {
+class TypeSafeHashMap implements TypeSafeMap {
 
     private Map<String, Object> values = new HashMap<>();
 

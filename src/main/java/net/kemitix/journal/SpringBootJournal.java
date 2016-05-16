@@ -4,9 +4,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import net.kemitix.journal.shell.TypeSafeHashMap;
-import net.kemitix.journal.shell.TypeSafeMap;
-
 /**
  * Application Main Class.
  *

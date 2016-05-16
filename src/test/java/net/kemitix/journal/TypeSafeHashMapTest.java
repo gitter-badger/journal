@@ -1,4 +1,4 @@
-package net.kemitix.journal.shell;
+package net.kemitix.journal;
 
 import org.junit.Before;
 import org.junit.Rule;
