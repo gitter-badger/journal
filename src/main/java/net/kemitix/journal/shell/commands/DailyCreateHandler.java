@@ -27,7 +27,7 @@ import net.kemitix.journal.TypeSafeMap;
  * @author pcampbell
  */
 @Service
-public class DailyCreateHandler extends AbstractCommandHandler {
+class DailyCreateHandler extends AbstractCommandHandler {
 
     private static final List<String> ALIASES = Collections.singletonList(
             "create daily");
