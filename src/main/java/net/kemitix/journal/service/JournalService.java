@@ -17,6 +17,8 @@ public interface JournalService {
      * Creates a new DailyLog for the supplied date and save it.
      *
      * @param date the date to create the DailyLog for
+     *
+     * @return the created daily log
      */
     DailyLog createDailyLog(LocalDate date);
 
