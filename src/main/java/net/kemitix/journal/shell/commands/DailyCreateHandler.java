@@ -18,8 +18,7 @@ import javax.inject.Inject;
 import org.springframework.stereotype.Service;
 
 import net.kemitix.journal.TypeSafeMap;
-import net.kemitix.journal.dao.DailyLogDAO;
-import net.kemitix.journal.model.DailyLog;
+import net.kemitix.journal.service.JournalService;
 import net.kemitix.journal.shell.AbstractCommandHandler;
 
 /**
@@ -39,7 +38,7 @@ class DailyCreateHandler extends AbstractCommandHandler {
     private static final List<String> PARAMETERS = Collections.singletonList(
             "date");
 
-    private final DailyLogDAO dailyLogDAO;
+    private final JournalService journalService;
 
     private final DateSetHandler dateSetHandler;
 
@@ -47,9 +46,10 @@ class DailyCreateHandler extends AbstractCommandHandler {
 
     @Inject
     DailyCreateHandler(
-            final DailyLogDAO dailyLogDAO, final DateSetHandler dateSetHandler,
+            final JournalService journalService,
+            final DateSetHandler dateSetHandler,
             final TypeSafeMap applicationState) {
-        this.dailyLogDAO = dailyLogDAO;
+        this.journalService = journalService;
         this.dateSetHandler = dateSetHandler;
         this.applicationState = applicationState;
     }
@@ -100,8 +100,7 @@ class DailyCreateHandler extends AbstractCommandHandler {
                 date = LocalDate.now();
             }
         }
-        val dailyLog = new DailyLog(date);
-        dailyLogDAO.save(dailyLog);
+        val dailyLog = journalService.createDailyLog(date);
         output.add("Daily log created for " + dailyLog.getDate());
         return String.join("\n", output);
     }

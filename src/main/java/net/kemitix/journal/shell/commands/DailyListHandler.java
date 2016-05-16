@@ -11,8 +11,8 @@ import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
 
-import net.kemitix.journal.dao.DailyLogDAO;
 import net.kemitix.journal.model.DailyLog;
+import net.kemitix.journal.service.JournalService;
 import net.kemitix.journal.shell.AbstractCommandHandler;
 
 /**
@@ -26,11 +26,12 @@ class DailyListHandler extends AbstractCommandHandler {
     private static final List<String> ALIASES = Arrays.asList("daily list",
             "list daily");
 
-    private final DailyLogDAO dailyLogDAO;
+    private final JournalService journalService;
 
     @Inject
-    DailyListHandler(final DailyLogDAO dailyLogDAO) {
-        this.dailyLogDAO = dailyLogDAO;
+    DailyListHandler(
+            final JournalService journalService) {
+        this.journalService = journalService;
     }
 
     @Override
@@ -45,7 +46,7 @@ class DailyListHandler extends AbstractCommandHandler {
 
     @Override
     public String handle(final Map<String, String> args) {
-        final List<DailyLog> all = dailyLogDAO.findAll();
+        final List<DailyLog> all = journalService.getAllDailyLogs();
         if (all.size() == 0) {
             return "No Daily Logs found";
         }
