@@ -18,10 +18,6 @@ class TypeSafeHashMap implements TypeSafeMap {
     @Override
     public <T> void put(
             final String key, final T value, final Class<T> type) {
-        if (!type.isAssignableFrom(value.getClass())) {
-            throw new IllegalArgumentException(
-                    "value is not an instance of the given type");
-        }
         values.put(key, value);
         types.put(key, type);
     }
