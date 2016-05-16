@@ -2,6 +2,8 @@ package net.kemitix.journal.shell;
 
 import lombok.val;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -42,7 +44,8 @@ public class CommandPrompt {
      */
     @PostConstruct
     public void run() {
-        try (val br = new BufferedReader(new InputStreamReader(System.in))) {
+        try (val br = new BufferedReader(
+                new InputStreamReader(System.in, UTF_8))) {
             System.out.println("Ctrl-D to quit");
             applicationState.put("running", true, Boolean.class);
             applicationState.put("selected date", LocalDate.now(),
