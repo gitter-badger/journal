@@ -6,6 +6,7 @@ import static net.kemitix.journal.shell.CommandPrompt.SELECTED_DATE;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -16,10 +17,10 @@ import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
 
+import net.kemitix.journal.TypeSafeMap;
 import net.kemitix.journal.dao.DailyLogDAO;
 import net.kemitix.journal.model.DailyLog;
 import net.kemitix.journal.shell.AbstractCommandHandler;
-import net.kemitix.journal.TypeSafeMap;
 
 /**
  * Create a Daily Log for the supplied date, or today if none given.
@@ -29,7 +30,7 @@ import net.kemitix.journal.TypeSafeMap;
 @Service
 class DailyCreateHandler extends AbstractCommandHandler {
 
-    private static final List<String> ALIASES = Collections.singletonList(
+    private static final List<String> ALIASES = Arrays.asList("daily create",
             "create daily");
 
     private static final String PARAMETER_REGEX

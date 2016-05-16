@@ -3,6 +3,7 @@ package net.kemitix.journal.shell.commands;
 import static net.kemitix.journal.shell.CommandPrompt.SELECTED_DATE;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -13,8 +14,8 @@ import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
 
-import net.kemitix.journal.shell.AbstractCommandHandler;
 import net.kemitix.journal.TypeSafeMap;
+import net.kemitix.journal.shell.AbstractCommandHandler;
 
 /**
  * Sets the application's current date to that provided. This date will be the
@@ -25,7 +26,7 @@ import net.kemitix.journal.TypeSafeMap;
 @Service
 class DateSetHandler extends AbstractCommandHandler {
 
-    private static final List<String> ALIASES = Collections.singletonList(
+    private static final List<String> ALIASES = Arrays.asList("date set",
             "set date");
 
     private static final String PARAMETER_REGEX

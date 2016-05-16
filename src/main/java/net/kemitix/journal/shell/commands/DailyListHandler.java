@@ -1,6 +1,6 @@
 package net.kemitix.journal.shell.commands;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +23,7 @@ import net.kemitix.journal.shell.AbstractCommandHandler;
 @Service
 class DailyListHandler extends AbstractCommandHandler {
 
-    private static final List<String> ALIASES = Collections.singletonList(
+    private static final List<String> ALIASES = Arrays.asList("daily list",
             "list daily");
 
     private final DailyLogDAO dailyLogDAO;
