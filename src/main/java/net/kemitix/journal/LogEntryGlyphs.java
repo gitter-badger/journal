@@ -57,6 +57,8 @@ public class LogEntryGlyphs {
                 return actionDeferred;
             case SCHEDULED:
                 return actionScheduled;
+            default:
+                return " ";
             }
         }
         return " ";
