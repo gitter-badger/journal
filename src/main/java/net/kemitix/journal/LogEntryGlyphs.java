@@ -53,7 +53,7 @@ public class LogEntryGlyphs {
                 return actionTodo;
             case DONE:
                 return actionDone;
-            case DEFERED:
+            case DEFERRED:
                 return actionDeferred;
             case SCHEDULED:
                 return actionScheduled;

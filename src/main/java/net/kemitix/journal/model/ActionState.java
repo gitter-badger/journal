@@ -8,7 +8,7 @@ package net.kemitix.journal.model;
 public enum ActionState {
 
     TODO("todo"),
-    DEFERED("defered"),
+    DEFERRED("deferred"),
     SCHEDULED("scheduled"),
     DONE("done");
 
