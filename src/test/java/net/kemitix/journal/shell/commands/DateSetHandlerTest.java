@@ -12,6 +12,7 @@ import org.mockito.MockitoAnnotations;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 
+import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.util.HashMap;
 
@@ -30,6 +31,9 @@ public class DateSetHandlerTest {
 
     @Mock
     private TypeSafeMap applicationState;
+
+    @Mock
+    private PrintWriter writer;
 
     private LocalDate today;
 
@@ -70,9 +74,9 @@ public class DateSetHandlerTest {
     @Test
     public void shouldHandleWithNoArgs() throws Exception {
         //when
-        val result = handler.handle(args);
+        handler.handle(args);
         //then
-        assertThat(result).contains("Date set to " + today);
+        verify(writer).println("Date set to " + today);
         verify(applicationState).put("selected-date", today, LocalDate.class);
     }
 
@@ -82,9 +86,9 @@ public class DateSetHandlerTest {
         val tomorrow = LocalDate.now().plusDays(1);
         args.put("date", tomorrow.toString());
         //when
-        val result = handler.handle(args);
+        handler.handle(args);
         //then
-        assertThat(result).contains("Date set to " + tomorrow);
+        verify(writer).println("Date set to " + tomorrow);
         verify(applicationState).put("selected-date", tomorrow,
                 LocalDate.class);
     }

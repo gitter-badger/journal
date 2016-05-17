@@ -1,6 +1,5 @@
 package net.kemitix.journal.shell.commands;
 
-import lombok.val;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -9,8 +8,10 @@ import org.mockito.MockitoAnnotations;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 
+import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.util.HashMap;
 
@@ -46,12 +47,15 @@ public class DailyCreateHandlerTest {
 
     private LocalDate tomorrow;
 
+    @Mock
+    private PrintWriter writer;
+
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         applicationState = new TypeSafeHashMap();
         handler = new DailyCreateHandler(journalService, dateSetHandler,
-                applicationState);
+                applicationState, writer);
         now = LocalDate.now();
         args = new HashMap<>();
         yesterday = LocalDate.now().minusDays(1);
@@ -89,10 +93,10 @@ public class DailyCreateHandlerTest {
         dailyLog = new DailyLog(now);
         given(journalService.createDailyLog(now)).willReturn(dailyLog);
         //when
-        val result = handler.handle(args);
+        handler.handle(args);
         //then
         verify(journalService).createDailyLog(eq(now));
-        assertThat(result).contains("Daily log created for " + now);
+        verify(writer).println("Daily log created for " + now);
     }
 
     @Test
@@ -102,10 +106,10 @@ public class DailyCreateHandlerTest {
         applicationState.put("selected-date", yesterday, LocalDate.class);
         given(journalService.createDailyLog(yesterday)).willReturn(dailyLog);
         //when
-        String result = handler.handle(args);
+        handler.handle(args);
         //then
         verify(journalService).createDailyLog(eq(yesterday));
-        assertThat(result).contains("Daily log created for " + yesterday);
+        verify(writer).println("Daily log created for " + yesterday);
     }
 
     @Test
@@ -114,15 +118,15 @@ public class DailyCreateHandlerTest {
         dailyLog = new DailyLog(tomorrow);
         args.put("date", tomorrow.toString());
         given(journalService.createDailyLog(tomorrow)).willReturn(dailyLog);
-        given(dateSetHandler.handle(args)).willAnswer(i -> {
+        doAnswer(i -> {
             applicationState.put("selected-date", tomorrow, LocalDate.class);
-            return "";
-        });
+            return null;
+        }).when(dateSetHandler).handle(args);
         //when
-        String result = handler.handle(args);
+        handler.handle(args);
         //then
         verify(journalService).createDailyLog(eq(tomorrow));
-        assertThat(result).contains("Daily log created for " + tomorrow);
+        verify(writer).println("Daily log created for " + tomorrow);
     }
 
 }

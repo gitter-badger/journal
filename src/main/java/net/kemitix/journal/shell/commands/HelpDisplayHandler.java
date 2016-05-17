@@ -1,9 +1,9 @@
 package net.kemitix.journal.shell.commands;
 
+import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -25,9 +25,13 @@ class HelpDisplayHandler extends AbstractCommandHandler {
 
     private final List<CommandHandler> handlerList;
 
+    private final PrintWriter writer;
+
     @Inject
-    HelpDisplayHandler(final List<CommandHandler> handlerList) {
+    HelpDisplayHandler(
+            final List<CommandHandler> handlerList, final PrintWriter writer) {
         this.handlerList = handlerList;
+        this.writer = writer;
     }
 
     @Override
@@ -41,11 +45,11 @@ class HelpDisplayHandler extends AbstractCommandHandler {
     }
 
     @Override
-    public String handle(final Map<String, String> args) {
-        return "The following commands are available:\n" + String.join("\n",
-                handlerList.stream()
-                           .map(CommandHandler::getUsage)
-                           .collect(Collectors.toList()));
+    public void handle(final Map<String, String> args) {
+        writer.println("The following commands are available:");
+        handlerList.stream()
+                   .map(CommandHandler::getUsage)
+                   .forEach(writer::println);
     }
 
 }

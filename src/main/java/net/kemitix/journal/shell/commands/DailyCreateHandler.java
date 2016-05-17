@@ -4,8 +4,8 @@ import lombok.val;
 
 import static net.kemitix.journal.shell.CommandPrompt.SELECTED_DATE;
 
+import java.io.PrintWriter;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -44,14 +44,17 @@ class DailyCreateHandler extends AbstractCommandHandler {
 
     private final TypeSafeMap applicationState;
 
+    private final PrintWriter writer;
+
     @Inject
     DailyCreateHandler(
             final JournalService journalService,
             final DateSetHandler dateSetHandler,
-            final TypeSafeMap applicationState) {
+            final TypeSafeMap applicationState, final PrintWriter writer) {
         this.journalService = journalService;
         this.dateSetHandler = dateSetHandler;
         this.applicationState = applicationState;
+        this.writer = writer;
     }
 
     @Override
@@ -84,12 +87,11 @@ class DailyCreateHandler extends AbstractCommandHandler {
     }
 
     @Override
-    public String handle(
+    public void handle(
             final Map<String, String> args) {
         LocalDate date;
-        List<String> output = new ArrayList<>();
         if (args.containsKey("date")) {
-            output.add(dateSetHandler.handle(args));
+            dateSetHandler.handle(args);
         }
         val dateOptional = applicationState.get(SELECTED_DATE, LocalDate.class);
         if (dateOptional.isPresent()) {
@@ -98,8 +100,7 @@ class DailyCreateHandler extends AbstractCommandHandler {
             date = LocalDate.now();
         }
         val dailyLog = journalService.createDailyLog(date);
-        output.add("Daily log created for " + dailyLog.getDate());
-        return String.join("\n", output);
+        writer.println("Daily log created for " + dailyLog.getDate());
     }
 
 }

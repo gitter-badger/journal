@@ -2,12 +2,12 @@ package net.kemitix.journal.shell.commands;
 
 import lombok.val;
 
+import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import net.kemitix.journal.LogEntryGlyphs;
 import net.kemitix.journal.LogEntryList;
 import net.kemitix.journal.TypeSafeMap;
-import net.kemitix.journal.model.LogEntry;
 import net.kemitix.journal.service.JournalService;
 import net.kemitix.journal.shell.AbstractCommandHandler;
 
@@ -31,19 +30,23 @@ class DailyShowHandler extends AbstractCommandHandler {
     private static final List<String> ALIASES = Arrays.asList("daily show",
             "show daily");
 
-    private final JournalService journalService;
+    private final JournalService service;
 
-    private final TypeSafeMap applicationState;
+    private final TypeSafeMap state;
 
     private final LogEntryGlyphs glyphs;
+
+    private final PrintWriter writer;
 
     @Inject
     DailyShowHandler(
             final JournalService journalService,
-            final TypeSafeMap applicationState, final LogEntryGlyphs glyphs) {
-        this.journalService = journalService;
-        this.applicationState = applicationState;
+            final TypeSafeMap applicationState, final LogEntryGlyphs glyphs,
+            final PrintWriter writer) {
+        this.service = journalService;
+        this.state = applicationState;
         this.glyphs = glyphs;
+        this.writer = writer;
     }
 
     @Override
@@ -57,26 +60,19 @@ class DailyShowHandler extends AbstractCommandHandler {
     }
 
     @Override
-    public String handle(final Map<String, String> args) {
-        val logEntries = new LogEntryList();
-        applicationState.get("selected date", LocalDate.class)
-                        .ifPresent(date -> logEntries.addAll(
-                                journalService.getLogs(date)));
-        applicationState.put("log entries", logEntries, LogEntryList.class);
-        return logEntriesAsAList(logEntries);
-    }
-
-    private String logEntriesAsAList(final LogEntryList logEntries) {
-        AtomicInteger i = new AtomicInteger(0);
-        return logEntries.stream()
-                         .map((logEntry) -> logEntryAsItem(i.incrementAndGet(),
-                                 logEntry))
-                         .collect(Collectors.joining("\n"));
-    }
-
-    private String logEntryAsItem(final Integer i, final LogEntry logEntry) {
-        return String.format("%2d: %s %s", i, glyphs.getGlyph(logEntry),
-                logEntry.getTitle());
+    public void handle(final Map<String, String> args) {
+        // get log entries for args.'date' and place in state.'log entries'
+        val entries = new LogEntryList();
+        state.get("selected date", LocalDate.class)
+             .ifPresent(date -> entries.addAll(service.getLogs(date)));
+        state.put("log entries", entries, LogEntryList.class);
+        // write as a list with index and glyph
+        AtomicInteger index = new AtomicInteger(0);
+        entries.stream()
+               .map((entry) -> String.format("%2d: %s %s",
+                       index.incrementAndGet(), glyphs.getGlyph(entry),
+                       entry.getTitle()))
+               .forEach(writer::println);
     }
 
 }

@@ -60,9 +60,7 @@ public interface CommandHandler {
      * Handle the command.
      *
      * @param args the matched arguments
-     *
-     * @return the command output
      */
-    String handle(Map<String, String> args);
+    void handle(Map<String, String> args);
 
 }

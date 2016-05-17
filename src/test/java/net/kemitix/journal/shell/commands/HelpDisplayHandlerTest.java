@@ -1,6 +1,5 @@
 package net.kemitix.journal.shell.commands;
 
-import lombok.val;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -8,7 +7,9 @@ import org.mockito.MockitoAnnotations;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,11 +30,14 @@ public class HelpDisplayHandlerTest {
     @Mock
     private CommandHandler mockHandler;
 
+    @Mock
+    private PrintWriter writer;
+
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         handlerList = new ArrayList<>();
-        handler = new HelpDisplayHandler(handlerList);
+        handler = new HelpDisplayHandler(handlerList, writer);
     }
 
     @Test
@@ -52,10 +56,10 @@ public class HelpDisplayHandlerTest {
         handlerList.add(mockHandler);
         given(mockHandler.getUsage()).willReturn("mock usage");
         //when
-        val result = handler.handle(new HashMap<>());
+        handler.handle(new HashMap<>());
         //then
-        assertThat(result).contains("The following commands are available");
-        assertThat(result).contains("mock usage");
+        verify(writer).println("The following commands are available:");
+        verify(writer).println("mock usage");
     }
 
 }

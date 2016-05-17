@@ -31,7 +31,7 @@ public class CommandPrompt {
 
     private final BufferedReader reader;
 
-    private final PrintWriter output;
+    private final PrintWriter writer;
 
     @Inject
     CommandPrompt(
@@ -42,7 +42,7 @@ public class CommandPrompt {
         this.commandRouter = commandRouter;
         this.applicationState = applicationState;
         this.reader = commandLineReader;
-        this.output = commandLineWriter;
+        this.writer = commandLineWriter;
     }
 
     /**
@@ -50,18 +50,18 @@ public class CommandPrompt {
      */
     @PostConstruct
     public void run() {
-        output.println("Ctrl-D to quit");
+        writer.println("Ctrl-D to quit");
         applicationState.put("running", true, Boolean.class);
         applicationState.put("selected date", LocalDate.now(), LocalDate.class);
         try {
             while (applicationState.get("running", Boolean.class).isPresent()) {
-                output.print("> ");
-                output.flush();
+                writer.print("> ");
+                writer.flush();
                 val input = reader.readLine();
                 if (input == null) {
                     applicationState.remove("running");
-                    output.println();
-                    output.println("Exiting...");
+                    writer.println();
+                    writer.println("Exiting...");
                 } else if (input.length() > 0) {
                     // look up command
                     val commandMapping = commandRouter.selectCommand(input);
@@ -69,18 +69,17 @@ public class CommandPrompt {
                     if (commandMapping.isPresent()) {
                         val mapping = commandMapping.get();
                         try {
-                            output.println(mapping.getHandler()
-                                                  .handle(mapping.getArgs()));
+                            mapping.getHandler().handle(mapping.getArgs());
                         } catch (CommandHandlerException e) {
-                            output.println("Error: " + e.getMessage());
+                            writer.println("Error: " + e.getMessage());
                         }
                     } else {
-                        output.println("Not a recognised command!");
+                        writer.println("Not a recognised command!");
                     }
                 }
             }
         } catch (IOException e) {
-            output.println("Aborting: " + e.getMessage());
+            writer.println("Aborting: " + e.getMessage());
         }
     }
 }

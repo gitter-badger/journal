@@ -9,6 +9,7 @@ import org.mockito.MockitoAnnotations;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,6 +30,9 @@ public class ApplicationExitHandlerTest {
 
     private Map<String, String> args;
 
+    @Mock
+    private PrintWriter writer;
+
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
@@ -48,9 +52,9 @@ public class ApplicationExitHandlerTest {
     @Test
     public void shouldHandle() throws Exception {
         //when
-        final String result = handler.handle(args);
+        handler.handle(args);
         //then
-        assertThat(result).contains("Exiting");
+        verify(writer).println("Exiting...");
         verify(applicationState).remove("running");
     }
 
