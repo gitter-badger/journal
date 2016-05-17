@@ -4,11 +4,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.stereotype.Component;
+
 /**
  * Implementation of {@link TypeSafeMap} using HashMaps.
  *
  * @author pcampbell
  */
+@Component
 public class TypeSafeHashMap implements TypeSafeMap {
 
     private Map<String, Object> values = new HashMap<>();
