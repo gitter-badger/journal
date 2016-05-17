@@ -2,6 +2,7 @@ package net.kemitix.journal.shell.commands;
 
 import static net.kemitix.journal.shell.CommandPrompt.SELECTED_DATE;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import net.kemitix.journal.TypeSafeMap;
 import net.kemitix.journal.shell.AbstractCommandHandler;
+import net.kemitix.journal.shell.CommandHandlerException;
 
 /**
  * Sets the application's current date to that provided. This date will be the
@@ -75,7 +77,12 @@ class DateSetHandler extends AbstractCommandHandler {
     public String handle(final Map<String, String> args) {
         LocalDate selectedDate = LocalDate.now();
         if (args.containsKey("date")) {
-            selectedDate = LocalDate.parse(args.get("date"));
+            try {
+                selectedDate = LocalDate.parse(args.get("date"));
+            } catch (DateTimeException e) {
+                throw new CommandHandlerException(
+                        "Invalid date: " + args.get("date"), e);
+            }
         }
         applicationState.put(SELECTED_DATE, selectedDate, LocalDate.class);
         return "Date set to " + selectedDate;

@@ -2,7 +2,9 @@ package net.kemitix.journal.shell.commands;
 
 import lombok.val;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -14,6 +16,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 
 import net.kemitix.journal.TypeSafeMap;
+import net.kemitix.journal.shell.CommandHandlerException;
 
 /**
  * Tests for {@link DateSetHandler}.
@@ -82,6 +85,20 @@ public class DateSetHandlerTest {
         val result = handler.handle(args);
         //then
         assertThat(result).contains("Date set to " + tomorrow);
-        verify(applicationState).put("selected-date", tomorrow, LocalDate.class);
+        verify(applicationState).put("selected-date", tomorrow,
+                LocalDate.class);
+    }
+
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
+
+    @Test
+    public void shouldReportWhenDateIsInvalid() {
+        //given
+        args.put("date", "2016-14-01"); // invalid month
+        exception.expect(CommandHandlerException.class);
+        exception.expectMessage("Invalid date: 2016-14-01");
+        //when
+        handler.handle(args);
     }
 }
