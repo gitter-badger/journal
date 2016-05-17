@@ -9,6 +9,8 @@ import org.mockito.MockitoAnnotations;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 import java.time.LocalDate;
@@ -49,11 +51,13 @@ public class DefaultJournalServiceTest {
 
     @Test
     public void shouldCreateDailyLog() throws Exception {
+        //given
+        given(dailyLogDAO.findOne(now)).willReturn(dailyLog);
         //when
-        val dailyLog = service.createDailyLog(now);
+        val result = service.createDailyLog(now);
         //then
-        assertThat(dailyLog.getDate()).isSameAs(now);
-        verify(dailyLogDAO).save(dailyLog);
+        verify(dailyLogDAO).save(any(DailyLog.class));
+        assertThat(result).isEqualTo(dailyLog);
     }
 
     @Test
@@ -89,4 +93,28 @@ public class DefaultJournalServiceTest {
         assertThat(result).isSameAs(logEntries);
     }
 
+    @Test
+    public void shouldGetDailyLogWithCreate() {
+        //given
+        given(dailyLogDAO.findByDate(now)).willReturn(Optional.empty());
+        given(dailyLogDAO.findOne(now)).willReturn(dailyLog);
+        //when
+        val result = service.getDailyLog(now);
+        //then
+        assertThat(result).isSameAs(dailyLog);
+        verify(dailyLogDAO).save(any(DailyLog.class)); // created item is saved
+        verify(dailyLogDAO).findOne(now); // then is reloaded from DB
+    }
+
+    @Test
+    public void shouldGetDailyLogWithExisting() {
+        //given
+        given(dailyLogDAO.findByDate(now)).willReturn(Optional.of(dailyLog));
+        //when
+        val result = service.getDailyLog(now);
+        //then
+        assertThat(result).isSameAs(dailyLog);
+        verify(dailyLogDAO, never()).save(any(DailyLog.class));
+        verify(dailyLogDAO, never()).findOne(now);
+    }
 }

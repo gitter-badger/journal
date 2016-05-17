@@ -39,7 +39,7 @@ class DefaultJournalService implements JournalService {
     public DailyLog createDailyLog(final LocalDate date) {
         val dailyLog = new DailyLog(date);
         dailyLogDAO.save(dailyLog);
-        return dailyLog;
+        return dailyLogDAO.findOne(dailyLog.getDate());
     }
 
     @Override
@@ -58,10 +58,7 @@ class DefaultJournalService implements JournalService {
 
     @Override
     public DailyLog getDailyLog(final LocalDate date) {
-        val dailyLog = dailyLogDAO.findOne(date);
-        if (dailyLog == null) {
-            return createDailyLog(date);
-        }
-        return dailyLog;
+        return dailyLogDAO.findByDate(date)
+                          .orElseGet(() -> createDailyLog(date));
     }
 }
