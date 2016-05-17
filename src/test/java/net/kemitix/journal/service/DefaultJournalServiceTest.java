@@ -19,8 +19,10 @@ import java.util.Optional;
 
 import net.kemitix.journal.dao.DailyLogDAO;
 import net.kemitix.journal.dao.LogEntryDAO;
+import net.kemitix.journal.dao.NoteLogEntryDAO;
 import net.kemitix.journal.model.DailyLog;
 import net.kemitix.journal.model.LogEntry;
+import net.kemitix.journal.model.NoteLogEntry;
 
 /**
  * Tests for {@link DefaultJournalService}.
@@ -38,10 +40,16 @@ public class DefaultJournalServiceTest {
     @Mock
     private LogEntryDAO logEntryDAO;
 
+    @Mock
+    private NoteLogEntryDAO noteLogEntryDAO;
+
     private LocalDate now;
 
     @Mock
     private DailyLog dailyLog;
+
+    @Mock
+    private NoteLogEntry noteLogEntry;
 
     @Before
     public void setUp() throws Exception {
@@ -116,5 +124,22 @@ public class DefaultJournalServiceTest {
         assertThat(result).isSameAs(dailyLog);
         verify(dailyLogDAO, never()).save(any(DailyLog.class));
         verify(dailyLogDAO, never()).findOne(now);
+    }
+
+    @Test
+    public void shouldCreateNoteLogEntry() {
+        //given
+        given(dailyLogDAO.findByDate(now)).willReturn(Optional.of(dailyLog));
+        given(noteLogEntryDAO.findOne(any(Long.class))).willReturn(
+                noteLogEntry);
+        val dailyLogEntries = new ArrayList<LogEntry>();
+        given(dailyLog.getEntries()).willReturn(dailyLogEntries);
+        //when
+        val result = service.createNoteLogEntry(now, "title", "body");
+        //then
+        verify(noteLogEntryDAO).save(any(NoteLogEntry.class));
+        assertThat(result).isEqualTo(noteLogEntry);
+        verify(dailyLogDAO).save(dailyLog);
+        assertThat(dailyLogEntries).contains(noteLogEntry);
     }
 }

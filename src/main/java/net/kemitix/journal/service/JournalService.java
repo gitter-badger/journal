@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.kemitix.journal.model.DailyLog;
 import net.kemitix.journal.model.LogEntry;
+import net.kemitix.journal.model.NoteLogEntry;
 
 /**
  * Interface for managing a Journal.
@@ -37,6 +38,17 @@ public interface JournalService {
      * @return the list of log entries
      */
     List<LogEntry> getLogs(LocalDate date);
+
+    /**
+     * Creates a new NoteLogEntry for the supplied title and body and saves it.
+     *
+     * @param date  the date for the note
+     * @param title the note's title
+     * @param body  the note's body
+     *
+     * @return the create note log entry
+     */
+    NoteLogEntry createNoteLogEntry(LocalDate date, String title, String body);
 
     /**
      * Finds, or creates, the Daily Log for the date given.
