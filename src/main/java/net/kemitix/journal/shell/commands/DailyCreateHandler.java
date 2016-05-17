@@ -89,16 +89,13 @@ class DailyCreateHandler extends AbstractCommandHandler {
         LocalDate date;
         List<String> output = new ArrayList<>();
         if (args.containsKey("date")) {
-            date = LocalDate.parse(args.get("date"));
             output.add(dateSetHandler.handle(args));
+        }
+        val dateOptional = applicationState.get(SELECTED_DATE, LocalDate.class);
+        if (dateOptional.isPresent()) {
+            date = dateOptional.get();
         } else {
-            val dateOptional = applicationState.get(SELECTED_DATE,
-                    LocalDate.class);
-            if (dateOptional.isPresent()) {
-                date = dateOptional.get();
-            } else {
-                date = LocalDate.now();
-            }
+            date = LocalDate.now();
         }
         val dailyLog = journalService.createDailyLog(date);
         output.add("Daily log created for " + dailyLog.getDate());
