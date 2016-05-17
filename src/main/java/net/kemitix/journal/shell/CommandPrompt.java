@@ -56,6 +56,7 @@ public class CommandPrompt {
         try {
             while (applicationState.get("running", Boolean.class).isPresent()) {
                 output.print("> ");
+                output.flush();
                 val input = reader.readLine();
                 if (input == null) {
                     applicationState.remove("running");
