@@ -130,6 +130,19 @@ public class DefaultCommandRouterTest {
         assertThat(result.isPresent()).as("no handler is selected").isFalse();
     }
 
+    @Test
+    public void shouldMatchNoneIfMultipleMatchesFound() {
+        //given
+        handlers.add(CommandFactory.builder().command("test").build().create());
+        handlers.add(CommandFactory.builder().command("test").build().create());
+        router.init();
+        //when
+        val result = router.selectCommand("test");
+        //then
+        assertThat(result.isPresent()).as(
+                "match nothing if more multiple command match").isFalse();
+    }
+
     @Getter
     @Builder
     private static class CommandFactory {

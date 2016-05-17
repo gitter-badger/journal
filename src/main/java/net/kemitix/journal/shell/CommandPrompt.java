@@ -2,11 +2,9 @@ package net.kemitix.journal.shell;
 
 import lombok.val;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.time.LocalDate;
 
 import javax.annotation.PostConstruct;
@@ -31,12 +29,20 @@ public class CommandPrompt {
 
     private final TypeSafeMap applicationState;
 
+    private final BufferedReader reader;
+
+    private final PrintWriter output;
+
     @Inject
     CommandPrompt(
             final CommandRouter commandRouter,
-            final TypeSafeMap applicationState) {
+            final TypeSafeMap applicationState,
+            final BufferedReader commandLineReader,
+            final PrintWriter commandLineWriter) {
         this.commandRouter = commandRouter;
         this.applicationState = applicationState;
+        this.reader = commandLineReader;
+        this.output = commandLineWriter;
     }
 
     /**
@@ -44,35 +50,32 @@ public class CommandPrompt {
      */
     @PostConstruct
     public void run() {
-        try (val br = new BufferedReader(
-                new InputStreamReader(System.in, UTF_8))) {
-            System.out.println("Ctrl-D to quit");
-            applicationState.put("running", true, Boolean.class);
-            applicationState.put("selected date", LocalDate.now(),
-                    LocalDate.class);
+        output.println("Ctrl-D to quit");
+        applicationState.put("running", true, Boolean.class);
+        applicationState.put("selected date", LocalDate.now(), LocalDate.class);
+        try {
             while (applicationState.get("running", Boolean.class).isPresent()) {
-                System.out.print("> ");
-                val input = br.readLine();
+                output.print("> ");
+                val input = reader.readLine();
                 if (input == null) {
                     applicationState.remove("running");
-                    System.out.println();
-                    System.out.println("Exiting...");
+                    output.println();
+                    output.println("Exiting...");
                 } else if (input.length() > 0) {
                     // look up command
                     val commandMapping = commandRouter.selectCommand(input);
                     // dispatch command
                     if (commandMapping.isPresent()) {
                         val mapping = commandMapping.get();
-                        System.out.println(
+                        output.println(
                                 mapping.getHandler().handle(mapping.getArgs()));
                     } else {
-                        System.out.println("Not a recognised command!");
+                        output.println("Not a recognised command!");
                     }
                 }
             }
         } catch (IOException e) {
-            System.out.println("Aborting: " + e.getMessage());
+            output.println("Aborting: " + e.getMessage());
         }
     }
-
 }
