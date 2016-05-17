@@ -68,8 +68,12 @@ public class CommandPrompt {
                     // dispatch command
                     if (commandMapping.isPresent()) {
                         val mapping = commandMapping.get();
-                        output.println(
-                                mapping.getHandler().handle(mapping.getArgs()));
+                        try {
+                            output.println(mapping.getHandler()
+                                                  .handle(mapping.getArgs()));
+                        } catch (CommandHandlerException e) {
+                            output.println("Error: " + e.getMessage());
+                        }
                     } else {
                         output.println("Not a recognised command!");
                     }
