@@ -37,4 +37,13 @@ public interface JournalService {
      * @return the list of log entries
      */
     List<LogEntry> getLogs(LocalDate date);
+
+    /**
+     * Finds, or creates, the Daily Log for the date given.
+     *
+     * @param date the date
+     *
+     * @return the found or created Daily Log
+     */
+    DailyLog getDailyLog(LocalDate date);
 }

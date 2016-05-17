@@ -55,4 +55,13 @@ class DefaultJournalService implements JournalService {
         }
         return new ArrayList<>();
     }
+
+    @Override
+    public DailyLog getDailyLog(final LocalDate date) {
+        val dailyLog = dailyLogDAO.findOne(date);
+        if (dailyLog == null) {
+            return createDailyLog(date);
+        }
+        return dailyLog;
+    }
 }
