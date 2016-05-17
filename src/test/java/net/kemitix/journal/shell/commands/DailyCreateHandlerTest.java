@@ -3,7 +3,6 @@ package net.kemitix.journal.shell.commands;
 import lombok.val;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -14,8 +13,8 @@ import static org.mockito.Mockito.verify;
 
 import java.time.LocalDate;
 import java.util.HashMap;
-import java.util.Optional;
 
+import net.kemitix.journal.TypeSafeHashMap;
 import net.kemitix.journal.TypeSafeMap;
 import net.kemitix.journal.model.DailyLog;
 import net.kemitix.journal.service.JournalService;
@@ -27,7 +26,6 @@ import net.kemitix.journal.service.JournalService;
  */
 public class DailyCreateHandlerTest {
 
-    @InjectMocks
     private DailyCreateHandler handler;
 
     @Mock
@@ -36,7 +34,6 @@ public class DailyCreateHandlerTest {
     @Mock
     private DateSetHandler dateSetHandler;
 
-    @Mock
     private TypeSafeMap applicationState;
 
     private LocalDate now;
@@ -52,6 +49,9 @@ public class DailyCreateHandlerTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
+        applicationState = new TypeSafeHashMap();
+        handler = new DailyCreateHandler(journalService, dateSetHandler,
+                applicationState);
         now = LocalDate.now();
         args = new HashMap<>();
         yesterday = LocalDate.now().minusDays(1);
@@ -87,8 +87,6 @@ public class DailyCreateHandlerTest {
     public void shouldHandleNoArgsNoDefault() throws Exception {
         //given
         dailyLog = new DailyLog(now);
-        given(applicationState.get("selected-date",
-                LocalDate.class)).willReturn(Optional.empty());
         given(journalService.createDailyLog(now)).willReturn(dailyLog);
         //when
         val result = handler.handle(args);
@@ -101,8 +99,7 @@ public class DailyCreateHandlerTest {
     public void shouldHandleNoArgsWithDefault() throws Exception {
         //given
         dailyLog = new DailyLog(yesterday);
-        given(applicationState.get("selected-date",
-                LocalDate.class)).willReturn(Optional.of(yesterday));
+        applicationState.put("selected-date", yesterday, LocalDate.class);
         given(journalService.createDailyLog(yesterday)).willReturn(dailyLog);
         //when
         String result = handler.handle(args);
@@ -116,10 +113,11 @@ public class DailyCreateHandlerTest {
         //given
         dailyLog = new DailyLog(tomorrow);
         args.put("date", tomorrow.toString());
-        given(applicationState.get("selected-date",
-                LocalDate.class)).willReturn(Optional.of(yesterday));
         given(journalService.createDailyLog(tomorrow)).willReturn(dailyLog);
-        given(dateSetHandler.handle(args)).willReturn("");
+        given(dateSetHandler.handle(args)).willAnswer(i -> {
+            applicationState.put("selected-date", tomorrow, LocalDate.class);
+            return "";
+        });
         //when
         String result = handler.handle(args);
         //then
