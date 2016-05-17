@@ -9,7 +9,7 @@ import java.util.Optional;
  *
  * @author pcampbell
  */
-class TypeSafeHashMap implements TypeSafeMap {
+public class TypeSafeHashMap implements TypeSafeMap {
 
     private Map<String, Object> values = new HashMap<>();
 
