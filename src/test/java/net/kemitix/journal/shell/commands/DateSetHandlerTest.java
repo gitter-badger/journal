@@ -16,8 +16,8 @@ import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.util.HashMap;
 
-import net.kemitix.journal.TypeSafeMap;
 import net.kemitix.journal.shell.CommandHandlerException;
+import net.kemitix.journal.shell.ShellState;
 
 /**
  * Tests for {@link DateSetHandler}.
@@ -30,7 +30,7 @@ public class DateSetHandlerTest {
     private DateSetHandler handler;
 
     @Mock
-    private TypeSafeMap applicationState;
+    private ShellState shellState;
 
     @Mock
     private PrintWriter writer;
@@ -77,7 +77,7 @@ public class DateSetHandlerTest {
         handler.handle(args);
         //then
         verify(writer).println("Date set to " + today);
-        verify(applicationState).put("selected-date", today, LocalDate.class);
+        verify(shellState).setDefaultDate(today);
     }
 
     @Test
@@ -89,8 +89,7 @@ public class DateSetHandlerTest {
         handler.handle(args);
         //then
         verify(writer).println("Date set to " + tomorrow);
-        verify(applicationState).put("selected-date", tomorrow,
-                LocalDate.class);
+        verify(shellState).setDefaultDate(tomorrow);
     }
 
     @Rule

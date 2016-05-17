@@ -13,7 +13,7 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.kemitix.journal.TypeSafeMap;
+import net.kemitix.journal.shell.ShellState;
 
 /**
  * Tests for {@link ApplicationExitHandler}.
@@ -26,7 +26,7 @@ public class ApplicationExitHandlerTest {
     private ApplicationExitHandler handler;
 
     @Mock
-    private TypeSafeMap applicationState;
+    private ShellState shellState;
 
     private Map<String, String> args;
 
@@ -55,7 +55,7 @@ public class ApplicationExitHandlerTest {
         handler.handle(args);
         //then
         verify(writer).println("Exiting...");
-        verify(applicationState).remove("running");
+        verify(shellState).shutdown();
     }
 
 }

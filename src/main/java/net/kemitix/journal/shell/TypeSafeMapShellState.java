@@ -20,12 +20,17 @@ import net.kemitix.journal.model.LogEntry;
  * @author pcampbell
  */
 @Component
-class TypeSafeMapShellState implements ShellState {
+public class TypeSafeMapShellState implements ShellState {
 
     private final TypeSafeMap map;
 
+    /**
+     * Constructor.
+     *
+     * @param map the map for storage
+     */
     @Inject
-    TypeSafeMapShellState(final TypeSafeMap map) {
+    public TypeSafeMapShellState(final TypeSafeMap map) {
         this.map = map;
     }
 

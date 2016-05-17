@@ -1,7 +1,5 @@
 package net.kemitix.journal.shell.commands;
 
-import static net.kemitix.journal.shell.CommandPrompt.SELECTED_DATE;
-
 import java.io.PrintWriter;
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -16,9 +14,9 @@ import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
 
-import net.kemitix.journal.TypeSafeMap;
 import net.kemitix.journal.shell.AbstractCommandHandler;
 import net.kemitix.journal.shell.CommandHandlerException;
+import net.kemitix.journal.shell.ShellState;
 
 /**
  * Sets the application's current date to that provided. This date will be the
@@ -38,14 +36,14 @@ class DateSetHandler extends AbstractCommandHandler {
     private static final List<String> PARAMETER_NAMES
             = Collections.singletonList("date");
 
-    private final TypeSafeMap applicationState;
+    private final ShellState shellState;
 
     private final PrintWriter writer;
 
     @Inject
     DateSetHandler(
-            final TypeSafeMap applicationState, final PrintWriter writer) {
-        this.applicationState = applicationState;
+            final ShellState shellState, final PrintWriter writer) {
+        this.shellState = shellState;
         this.writer = writer;
     }
 
@@ -89,7 +87,7 @@ class DateSetHandler extends AbstractCommandHandler {
                         "Invalid date: " + args.get("date"), e);
             }
         }
-        applicationState.put(SELECTED_DATE, selectedDate, LocalDate.class);
+        shellState.setDefaultDate(selectedDate);
         writer.println("Date set to " + selectedDate);
     }
 }

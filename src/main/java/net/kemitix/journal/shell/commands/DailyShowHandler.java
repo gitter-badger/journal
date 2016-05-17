@@ -3,7 +3,6 @@ package net.kemitix.journal.shell.commands;
 import lombok.val;
 
 import java.io.PrintWriter;
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -15,9 +14,9 @@ import org.springframework.stereotype.Service;
 
 import net.kemitix.journal.LogEntryGlyphs;
 import net.kemitix.journal.LogEntryList;
-import net.kemitix.journal.TypeSafeMap;
 import net.kemitix.journal.service.JournalService;
 import net.kemitix.journal.shell.AbstractCommandHandler;
+import net.kemitix.journal.shell.ShellState;
 
 /**
  * Show the log entries for the currently selected date.
@@ -32,7 +31,7 @@ class DailyShowHandler extends AbstractCommandHandler {
 
     private final JournalService service;
 
-    private final TypeSafeMap state;
+    private final ShellState shellState;
 
     private final LogEntryGlyphs glyphs;
 
@@ -40,11 +39,10 @@ class DailyShowHandler extends AbstractCommandHandler {
 
     @Inject
     DailyShowHandler(
-            final JournalService journalService,
-            final TypeSafeMap applicationState, final LogEntryGlyphs glyphs,
-            final PrintWriter writer) {
+            final JournalService journalService, final ShellState shellState,
+            final LogEntryGlyphs glyphs, final PrintWriter writer) {
         this.service = journalService;
-        this.state = applicationState;
+        this.shellState = shellState;
         this.glyphs = glyphs;
         this.writer = writer;
     }
@@ -63,9 +61,8 @@ class DailyShowHandler extends AbstractCommandHandler {
     public void handle(final Map<String, String> args) {
         // get log entries for args.'date' and place in state.'log entries'
         val entries = new LogEntryList();
-        state.get("selected date", LocalDate.class)
-             .ifPresent(date -> entries.addAll(service.getLogs(date)));
-        state.put("log entries", entries, LogEntryList.class);
+        entries.addAll(service.getLogs(shellState.getDefaultDate()));
+        shellState.setLogEntryList(entries);
         // write as a list with index and glyph
         AtomicInteger index = new AtomicInteger(0);
         entries.stream()

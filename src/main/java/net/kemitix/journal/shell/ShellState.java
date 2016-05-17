@@ -44,7 +44,7 @@ public interface ShellState {
      * that they can select on of them later using {@link
      * #getLogEntryFromList(Integer)}.
      *
-     * @param list
+     * @param list the list of log entries
      */
     void setLogEntryList(LogEntryList list);
 
