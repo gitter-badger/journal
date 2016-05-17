@@ -1,5 +1,6 @@
 package net.kemitix.journal.shell.commands;
 
+import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -8,8 +9,8 @@ import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
 
-import net.kemitix.journal.shell.AbstractCommandHandler;
 import net.kemitix.journal.TypeSafeMap;
+import net.kemitix.journal.shell.AbstractCommandHandler;
 
 /**
  * Exit handler.
@@ -24,9 +25,13 @@ class ApplicationExitHandler extends AbstractCommandHandler {
 
     private final TypeSafeMap applicationState;
 
+    private final PrintWriter writer;
+
     @Inject
-    ApplicationExitHandler(final TypeSafeMap applicationState) {
+    ApplicationExitHandler(
+            final TypeSafeMap applicationState, final PrintWriter writer) {
         this.applicationState = applicationState;
+        this.writer = writer;
     }
 
     @Override
@@ -40,8 +45,8 @@ class ApplicationExitHandler extends AbstractCommandHandler {
     }
 
     @Override
-    public String handle(final Map<String, String> args) {
+    public void handle(final Map<String, String> args) {
         applicationState.remove("running");
-        return "Exiting...";
+        writer.println("Exiting...");
     }
 }

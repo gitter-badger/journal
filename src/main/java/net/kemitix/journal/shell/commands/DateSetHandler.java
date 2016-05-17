@@ -2,6 +2,7 @@ package net.kemitix.journal.shell.commands;
 
 import static net.kemitix.journal.shell.CommandPrompt.SELECTED_DATE;
 
+import java.io.PrintWriter;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -39,9 +40,13 @@ class DateSetHandler extends AbstractCommandHandler {
 
     private final TypeSafeMap applicationState;
 
+    private final PrintWriter writer;
+
     @Inject
-    DateSetHandler(final TypeSafeMap applicationState) {
+    DateSetHandler(
+            final TypeSafeMap applicationState, final PrintWriter writer) {
         this.applicationState = applicationState;
+        this.writer = writer;
     }
 
     @Override
@@ -74,7 +79,7 @@ class DateSetHandler extends AbstractCommandHandler {
     }
 
     @Override
-    public String handle(final Map<String, String> args) {
+    public void handle(final Map<String, String> args) {
         LocalDate selectedDate = LocalDate.now();
         if (args.containsKey("date")) {
             try {
@@ -85,6 +90,6 @@ class DateSetHandler extends AbstractCommandHandler {
             }
         }
         applicationState.put(SELECTED_DATE, selectedDate, LocalDate.class);
-        return "Date set to " + selectedDate;
+        writer.println("Date set to " + selectedDate);
     }
 }

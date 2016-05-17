@@ -32,8 +32,7 @@ public class AbstractCommandHandlerTest {
             }
 
             @Override
-            public String handle(final Map<String, String> args) {
-                return null;
+            public void handle(final Map<String, String> args) {
             }
         };
     }

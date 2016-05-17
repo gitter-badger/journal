@@ -8,6 +8,7 @@ import org.mockito.MockitoAnnotations;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.startsWith;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
@@ -38,20 +39,20 @@ public class CommandPromptTest {
     private BufferedReader reader;
 
     @Mock
-    private PrintWriter output;
-
-    @Mock
     private CommandMapping commandMapping;
 
     @Mock
     private CommandHandler commandHandler;
+
+    @Mock
+    private PrintWriter writer;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         applicationState = new TypeSafeHashMap();
         prompt = new CommandPrompt(commandRouter, applicationState, reader,
-                output);
+                writer);
     }
 
     @Test
@@ -60,7 +61,7 @@ public class CommandPromptTest {
         doThrow(IOException.class).when(reader).readLine();
         //when
         prompt.run();
-        verify(output).println(startsWith("Aborting: "));
+        verify(writer).println(startsWith("Aborting: "));
     }
 
     @Test
@@ -70,7 +71,7 @@ public class CommandPromptTest {
         //when
         prompt.run();
         //then
-        verify(output).println("Exiting...");
+        verify(writer).println("Exiting...");
     }
 
     @Test
@@ -80,7 +81,7 @@ public class CommandPromptTest {
         //when
         prompt.run();
         //then
-        verify(output).println("Exiting...");
+        verify(writer).println("Exiting...");
     }
 
     @Test
@@ -92,11 +93,14 @@ public class CommandPromptTest {
         given(commandMapping.getHandler()).willReturn(commandHandler);
         val args = new HashMap<String, String>();
         given(commandMapping.getArgs()).willReturn(args);
-        given(commandHandler.handle(args)).willReturn("expected output");
+        doAnswer(i -> {
+            writer.println("expected output");
+            return null;
+        }).when(commandHandler).handle(args);
         //when
         prompt.run();
         //then
-        verify(output).println("expected output");
+        verify(writer).println("expected output");
     }
 
     @Test
@@ -108,7 +112,7 @@ public class CommandPromptTest {
         //when
         prompt.run();
         //then
-        verify(output).println("Not a recognised command!");
+        verify(writer).println("Not a recognised command!");
     }
 
 }

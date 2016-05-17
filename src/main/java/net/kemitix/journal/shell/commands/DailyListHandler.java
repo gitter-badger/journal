@@ -1,11 +1,11 @@
 package net.kemitix.journal.shell.commands;
 
+import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -28,10 +28,13 @@ class DailyListHandler extends AbstractCommandHandler {
 
     private final JournalService journalService;
 
+    private final PrintWriter writer;
+
     @Inject
     DailyListHandler(
-            final JournalService journalService) {
+            final JournalService journalService, final PrintWriter writer) {
         this.journalService = journalService;
+        this.writer = writer;
     }
 
     @Override
@@ -45,15 +48,15 @@ class DailyListHandler extends AbstractCommandHandler {
     }
 
     @Override
-    public String handle(final Map<String, String> args) {
+    public void handle(final Map<String, String> args) {
         final List<DailyLog> all = journalService.getAllDailyLogs();
         if (all.size() == 0) {
-            return "No Daily Logs found";
+            writer.println("No Daily Logs found");
         }
-        return all.stream()
+        all.stream()
                   .sorted(sortByDate())
                   .map(dailyLogSummary())
-                  .collect(Collectors.joining("\n"));
+                  .forEach(writer::println);
     }
 
     private Function<DailyLog, String> dailyLogSummary() {

@@ -1,7 +1,6 @@
 package net.kemitix.journal.shell.commands;
 
 import lombok.val;
-import org.assertj.core.api.SoftAssertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -10,7 +9,9 @@ import org.mockito.MockitoAnnotations;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
+import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,6 +47,9 @@ public class DailyShowHandlerTest {
     @Mock
     private LogEntry logEntry2;
 
+    @Mock
+    private PrintWriter writer;
+
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
@@ -76,12 +80,10 @@ public class DailyShowHandlerTest {
         given(logEntry1.getTitle()).willReturn("entry 1");
         given(logEntry2.getTitle()).willReturn("entry 2");
         //when
-        val result = handler.handle(new HashMap<>());
+        handler.handle(new HashMap<>());
         //then
-        val softly = new SoftAssertions();
-        softly.assertThat(result).contains("1: a entry 1");
-        softly.assertThat(result).contains("2: b entry 2");
-        softly.assertAll();
+        verify(writer).println(" 1: a entry 1");
+        verify(writer).println(" 2: b entry 2");
     }
 
 }

@@ -9,7 +9,9 @@ import org.mockito.MockitoAnnotations;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
+import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
@@ -53,6 +55,9 @@ public class DailyListHandlerTest {
     @Mock
     private LogEntry logEntry3;
 
+    @Mock
+    private PrintWriter writer;
+
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
@@ -75,9 +80,9 @@ public class DailyListHandlerTest {
         given(journalService.getAllDailyLogs()).willReturn(
                 Collections.emptyList());
         //when
-        val result = handler.handle(args);
+        handler.handle(args);
         //then
-        assertThat(result).contains("No Daily Logs found");
+        verify(writer).println("No Daily Logs found");
     }
 
     @Test
@@ -94,11 +99,11 @@ public class DailyListHandlerTest {
         given(journalService.getAllDailyLogs()).willReturn(
                 Arrays.asList(logTomorrow, logToday, logYesterday));
         //when
-        val result = handler.handle(args);
+        handler.handle(args);
         //then
-        assertThat(result).contains(
-                "- " + tomorrow + ": 1 item(s)\n" + "- " + today
-                        + ": 0 item(s)\n" + "- " + yesterday + ": 0 item(s)");
+        verify(writer).println("- " + tomorrow + ": 1 item(s)");
+        verify(writer).println("- " + today + ": 0 item(s)");
+        verify(writer).println("- " + yesterday + ": 0 item(s)");
     }
 
 }
