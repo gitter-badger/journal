@@ -9,8 +9,8 @@ import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
 
-import net.kemitix.journal.TypeSafeMap;
 import net.kemitix.journal.shell.AbstractCommandHandler;
+import net.kemitix.journal.shell.ShellState;
 
 /**
  * Exit handler.
@@ -23,14 +23,14 @@ class ApplicationExitHandler extends AbstractCommandHandler {
     private static final List<String> ALIASES = Arrays.asList("exit", "quit",
             "bye");
 
-    private final TypeSafeMap applicationState;
+    private final ShellState shellState;
 
     private final PrintWriter writer;
 
     @Inject
     ApplicationExitHandler(
-            final TypeSafeMap applicationState, final PrintWriter writer) {
-        this.applicationState = applicationState;
+            final ShellState shellState, final PrintWriter writer) {
+        this.shellState = shellState;
         this.writer = writer;
     }
 
@@ -46,7 +46,7 @@ class ApplicationExitHandler extends AbstractCommandHandler {
 
     @Override
     public void handle(final Map<String, String> args) {
-        applicationState.remove("running");
+        shellState.shutdown();
         writer.println("Exiting...");
     }
 }

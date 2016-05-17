@@ -15,12 +15,11 @@ import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Optional;
 
 import net.kemitix.journal.LogEntryGlyphs;
-import net.kemitix.journal.TypeSafeMap;
 import net.kemitix.journal.model.LogEntry;
 import net.kemitix.journal.service.JournalService;
+import net.kemitix.journal.shell.ShellState;
 
 /**
  * Tests for {@link DailyShowHandler}.
@@ -36,7 +35,7 @@ public class DailyShowHandlerTest {
     private JournalService journalService;
 
     @Mock
-    private TypeSafeMap applicationState;
+    private ShellState shellState;
 
     @Mock
     private LogEntryGlyphs glyphs;
@@ -69,11 +68,10 @@ public class DailyShowHandlerTest {
     public void shouldHandle() throws Exception {
         //given
         val now = LocalDate.now();
-        given(applicationState.get("selected date",
-                LocalDate.class)).willReturn(Optional.of(now));
         val logEntries = new ArrayList<LogEntry>();
         logEntries.add(logEntry1);
         logEntries.add(logEntry2);
+        given(shellState.getDefaultDate()).willReturn(now);
         given(journalService.getLogs(now)).willReturn(logEntries);
         given(glyphs.getGlyph(logEntry1)).willReturn("a");
         given(glyphs.getGlyph(logEntry2)).willReturn("b");

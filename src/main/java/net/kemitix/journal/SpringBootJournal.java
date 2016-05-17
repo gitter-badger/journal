@@ -9,8 +9,7 @@ import java.io.PrintWriter;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties
-        .EnableConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
 /**
@@ -42,8 +41,4 @@ public class SpringBootJournal {
         return new PrintWriter(new OutputStreamWriter(System.out, UTF_8), true);
     }
 
-    @Bean
-    TypeSafeMap applicationState() {
-        return new TypeSafeHashMap();
-    }
 }

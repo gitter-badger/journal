@@ -16,12 +16,13 @@ import java.time.LocalDate;
 import java.util.HashMap;
 
 import net.kemitix.journal.TypeSafeHashMap;
-import net.kemitix.journal.TypeSafeMap;
 import net.kemitix.journal.model.DailyLog;
 import net.kemitix.journal.service.JournalService;
+import net.kemitix.journal.shell.ShellState;
+import net.kemitix.journal.shell.TypeSafeMapShellState;
 
 /**
- * .
+ * Tests for {@link DailyCreateHandler}.
  *
  * @author pcampbell
  */
@@ -35,7 +36,7 @@ public class DailyCreateHandlerTest {
     @Mock
     private DateSetHandler dateSetHandler;
 
-    private TypeSafeMap applicationState;
+    private ShellState shellState;
 
     private LocalDate now;
 
@@ -53,9 +54,9 @@ public class DailyCreateHandlerTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        applicationState = new TypeSafeHashMap();
+        shellState = new TypeSafeMapShellState(new TypeSafeHashMap());
         handler = new DailyCreateHandler(journalService, dateSetHandler,
-                applicationState, writer);
+                shellState, writer);
         now = LocalDate.now();
         args = new HashMap<>();
         yesterday = LocalDate.now().minusDays(1);
@@ -103,7 +104,7 @@ public class DailyCreateHandlerTest {
     public void shouldHandleNoArgsWithDefault() throws Exception {
         //given
         dailyLog = new DailyLog(yesterday);
-        applicationState.put("selected-date", yesterday, LocalDate.class);
+        shellState.setDefaultDate(yesterday);
         given(journalService.createDailyLog(yesterday)).willReturn(dailyLog);
         //when
         handler.handle(args);
@@ -119,7 +120,7 @@ public class DailyCreateHandlerTest {
         args.put("date", tomorrow.toString());
         given(journalService.createDailyLog(tomorrow)).willReturn(dailyLog);
         doAnswer(i -> {
-            applicationState.put("selected-date", tomorrow, LocalDate.class);
+            shellState.setDefaultDate(tomorrow);
             return null;
         }).when(dateSetHandler).handle(args);
         //when

@@ -5,14 +5,11 @@ import lombok.val;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.time.LocalDate;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.springframework.stereotype.Component;
-
-import net.kemitix.journal.TypeSafeMap;
 
 /**
  * The Command Prompt. Reads input and looks up and dispatches to commands to
@@ -27,7 +24,7 @@ public class CommandPrompt {
 
     private final CommandRouter commandRouter;
 
-    private final TypeSafeMap applicationState;
+    private final ShellState shellState;
 
     private final BufferedReader reader;
 
@@ -35,12 +32,11 @@ public class CommandPrompt {
 
     @Inject
     CommandPrompt(
-            final CommandRouter commandRouter,
-            final TypeSafeMap applicationState,
+            final CommandRouter commandRouter, final ShellState shellState,
             final BufferedReader commandLineReader,
             final PrintWriter commandLineWriter) {
         this.commandRouter = commandRouter;
-        this.applicationState = applicationState;
+        this.shellState = shellState;
         this.reader = commandLineReader;
         this.writer = commandLineWriter;
     }
@@ -51,15 +47,13 @@ public class CommandPrompt {
     @PostConstruct
     public void run() {
         writer.println("Ctrl-D to quit");
-        applicationState.put("running", true, Boolean.class);
-        applicationState.put("selected date", LocalDate.now(), LocalDate.class);
         try {
-            while (applicationState.get("running", Boolean.class).isPresent()) {
+            while (!shellState.isShuttingDown()) {
                 writer.print("> ");
                 writer.flush();
                 val input = reader.readLine();
                 if (input == null) {
-                    applicationState.remove("running");
+                    shellState.shutdown();
                     writer.println();
                     writer.println("Exiting...");
                 } else if (input.length() > 0) {

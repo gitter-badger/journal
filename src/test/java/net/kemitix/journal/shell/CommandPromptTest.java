@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.Optional;
 
 import net.kemitix.journal.TypeSafeHashMap;
-import net.kemitix.journal.TypeSafeMap;
 
 /**
  * Tests for {@link CommandPrompt}.
@@ -32,8 +31,6 @@ public class CommandPromptTest {
 
     @Mock
     private CommandRouter commandRouter;
-
-    private TypeSafeMap applicationState;
 
     @Mock
     private BufferedReader reader;
@@ -50,9 +47,8 @@ public class CommandPromptTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        applicationState = new TypeSafeHashMap();
-        prompt = new CommandPrompt(commandRouter, applicationState, reader,
-                writer);
+        val shellState = new TypeSafeMapShellState(new TypeSafeHashMap());
+        prompt = new CommandPrompt(commandRouter, shellState, reader, writer);
     }
 
     @Test
