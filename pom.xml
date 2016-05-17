@@ -76,6 +76,14 @@
                     <mainClass>${start-class}</mainClass>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>net.kemitix</groupId>
+                <artifactId>digraph-dependency-maven-plugin</artifactId>
+                <version>0.4.1</version>
+                <configuration>
+                    <basePackage>net.kemitix.journal</basePackage>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
