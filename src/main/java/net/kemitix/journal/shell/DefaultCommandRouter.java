@@ -2,6 +2,7 @@ package net.kemitix.journal.shell;
 
 import lombok.val;
 
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,11 +25,15 @@ class DefaultCommandRouter implements CommandRouter {
 
     private final List<CommandHandler> handlerList;
 
+    private final PrintWriter writer;
+
     private Map<Pattern, CommandHandler> commandMap;
 
     @Inject
-    DefaultCommandRouter(final List<CommandHandler> handlerList) {
+    DefaultCommandRouter(
+            final List<CommandHandler> handlerList, final PrintWriter writer) {
         this.handlerList = handlerList;
+        this.writer = writer;
     }
 
     @PostConstruct
@@ -60,12 +65,12 @@ class DefaultCommandRouter implements CommandRouter {
             return Optional.of(mapping);
         }
         if (!matching.isEmpty()) {
-            System.out.println("Command matches multiple commands:");
+            writer.println("Command matches multiple commands:");
             matching.stream()
                     .map(p -> commandMap.get(p))
                     .map(CommandHandler::getSyntax)
                     .map(s -> "- " + s)
-                    .forEach(System.out::println);
+                    .forEach(writer::println);
         }
         return Optional.empty();
     }

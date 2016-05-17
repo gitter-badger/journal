@@ -11,7 +11,9 @@ import org.mockito.MockitoAnnotations;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
@@ -28,11 +30,14 @@ public class DefaultCommandRouterTest {
 
     private ArrayList<CommandHandler> handlers;
 
+    @Mock
+    private PrintWriter writer;
+
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         handlers = new ArrayList<>();
-        router = new DefaultCommandRouter(handlers);
+        router = new DefaultCommandRouter(handlers, writer);
     }
 
     @Test
@@ -137,10 +142,9 @@ public class DefaultCommandRouterTest {
         handlers.add(CommandFactory.builder().command("test").build().create());
         router.init();
         //when
-        val result = router.selectCommand("test");
+        router.selectCommand("test");
         //then
-        assertThat(result.isPresent()).as(
-                "match nothing if more multiple command match").isFalse();
+        verify(writer).println("Command matches multiple commands:");
     }
 
     @Getter
